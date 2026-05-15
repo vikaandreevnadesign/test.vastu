@@ -16,13 +16,11 @@
             --gold-dark: #b8862c;
             --graphite: #2B2D2E;
             --bordo: #6B1E2A;
-            --olive: #4A5A35;
-            --sand: #E8D4A2;
             --white: #FFFDF9;
-            --border-subtle: rgba(15, 79, 63, 0.12);
             --text-main: #2B2D2E;
             --text-soft: rgba(43, 45, 46, 0.65);
             --card-bg: rgba(255, 253, 249, 0.85);
+            --border-subtle: rgba(15, 79, 63, 0.12);
         }
 
         * {
@@ -40,24 +38,6 @@
             -webkit-tap-highlight-color: transparent;
             -webkit-user-select: none;
             user-select: none;
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 0;
-            opacity: 0.03;
-            background-image:
-                linear-gradient(var(--emerald) 0.5px, transparent 0.5px),
-                linear-gradient(90deg, var(--emerald) 0.5px, transparent 0.5px);
-            background-size: 40px 40px;
         }
 
         .container {
@@ -65,11 +45,9 @@
             margin: 0 auto;
             background: var(--card-bg);
             border-radius: 24px;
-            padding: 32px 28px;
+            padding: 30px 22px;
             border: 1px solid var(--border-subtle);
-            box-shadow: 0 8px 40px rgba(43, 45, 46, 0.08), 0 2px 8px rgba(43, 45, 46, 0.04);
-            position: relative;
-            z-index: 2;
+            box-shadow: 0 8px 40px rgba(43, 45, 46, 0.08);
         }
 
         .screen {
@@ -152,6 +130,9 @@
             background-color: rgba(15, 79, 63, 0.06);
             transform: translateY(-2px);
         }
+        .btn-outline:active {
+            transform: translateY(0);
+        }
 
         .btn:disabled {
             opacity: 0.35;
@@ -214,128 +195,109 @@
         }
         .compass-wrap {
             position: relative;
-            width: 140px;
-            height: 140px;
+            width: 130px;
+            height: 130px;
         }
-        .compass-bg {
-            width: 140px;
-            height: 140px;
+        .compass-outer {
+            width: 130px;
+            height: 130px;
             border-radius: 50%;
-            background: rgba(242, 235, 221, 0.8);
+            background: rgba(242, 235, 221, 0.9);
             border: 2px solid var(--gold);
             box-shadow: 0 4px 20px rgba(43, 45, 46, 0.08);
             position: relative;
             cursor: grab;
             touch-action: none;
-            transition: box-shadow 0.2s;
+            transition: transform 0.05s linear;
         }
-        .compass-bg:active {
+        .compass-outer:active {
             cursor: grabbing;
-            box-shadow: 0 8px 30px rgba(43, 45, 46, 0.15);
         }
-        .compass-bg.dragging {
-            cursor: grabbing;
-            box-shadow: 0 8px 30px rgba(43, 45, 46, 0.15);
-        }
-        .compass-center {
+        .compass-center-dot {
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 12px;
-            height: 12px;
+            width: 10px;
+            height: 10px;
             background: var(--bordo);
             border-radius: 50%;
             transform: translate(-50%, -50%);
             z-index: 5;
             pointer-events: none;
         }
-        .compass-north {
+        /* Метки сторон света — на вращающемся элементе */
+        .compass-mark {
             position: absolute;
-            top: 8px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 14px;
             font-weight: 700;
-            color: var(--bordo);
             pointer-events: none;
             z-index: 4;
         }
-        .compass-south {
-            position: absolute;
-            bottom: 8px;
+        .compass-mark.n {
+            top: 6px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 11px;
-            color: var(--text-soft);
-            pointer-events: none;
-            z-index: 4;
+            color: var(--bordo);
+            font-size: 14px;
         }
-        .compass-east {
-            position: absolute;
-            right: 10px;
+        .compass-mark.s {
+            bottom: 6px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--text-soft);
+            font-size: 11px;
+        }
+        .compass-mark.e {
+            right: 8px;
             top: 50%;
             transform: translateY(-50%);
-            font-size: 11px;
             color: var(--text-soft);
-            pointer-events: none;
-            z-index: 4;
+            font-size: 11px;
         }
-        .compass-west {
-            position: absolute;
-            left: 10px;
+        .compass-mark.w {
+            left: 8px;
             top: 50%;
             transform: translateY(-50%);
-            font-size: 11px;
             color: var(--text-soft);
-            pointer-events: none;
-            z-index: 4;
+            font-size: 11px;
         }
-        .compass-needle {
+        /* Стрелка севера — на вращающемся элементе */
+        .compass-arrow-n {
             position: absolute;
             top: 50%;
             left: 50%;
             width: 2px;
-            height: 52px;
+            height: 44px;
             background: var(--bordo);
             transform-origin: center center;
             pointer-events: none;
             z-index: 3;
             border-radius: 1px;
+            margin-top: -44px;
+            margin-left: -1px;
         }
-        .compass-needle::before {
+        .compass-arrow-n::after {
             content: '';
             position: absolute;
-            top: -4px;
+            top: -5px;
             left: -5px;
             width: 12px;
             height: 12px;
             background: var(--bordo);
             clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-            border-radius: 2px;
         }
-        .compass-needle-south {
+        .compass-arrow-s {
             position: absolute;
             top: 50%;
             left: 50%;
             width: 2px;
-            height: 52px;
-            background: rgba(43, 45, 46, 0.3);
+            height: 44px;
+            background: rgba(43, 45, 46, 0.25);
             transform-origin: center center;
             pointer-events: none;
             z-index: 2;
             border-radius: 1px;
-        }
-        .compass-tick {
-            position: absolute;
-            top: 2px;
-            left: 50%;
-            width: 1.5px;
-            height: 10px;
-            background: var(--gold);
-            transform-origin: center 68px;
-            opacity: 0.5;
-            pointer-events: none;
-            z-index: 1;
+            margin-top: 0;
+            margin-left: -1px;
         }
         .compass-degree {
             font-size: 12px;
@@ -344,7 +306,7 @@
             letter-spacing: 0.5px;
         }
 
-        /* ===== СЕТКА ВАСТУ ===== */
+        /* ===== СЕТКА ===== */
         .grid-section {
             position: relative;
             margin: 20px 0;
@@ -357,14 +319,14 @@
             overflow: hidden;
             touch-action: none;
         }
-        .grid-container {
+        .grid-inner {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform-origin: center center;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
         }
+        /* Сетка 3x3 */
         .grid-vastu {
             position: absolute;
             top: 10%;
@@ -376,6 +338,7 @@
             grid-template-rows: 1fr 1fr 1fr;
             pointer-events: none;
             z-index: 3;
+            transition: transform 0.1s linear;
         }
         .grid-cell {
             border: 1px solid rgba(15, 79, 63, 0.2);
@@ -391,7 +354,7 @@
             font-weight: 600;
             color: rgba(43, 45, 46, 0.6);
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.3px;
             line-height: 1.2;
             background-color: transparent;
         }
@@ -412,89 +375,59 @@
             letter-spacing: 0.3px;
             opacity: 0.7;
         }
-        /* Подписи сторон света по краям сетки */
-        .grid-compass-label {
+        /* Подписи сторон света по краям */
+        .grid-edge-label {
             position: absolute;
             font-size: 10px;
             font-weight: 700;
-            color: var(--bordo);
             pointer-events: none;
             z-index: 5;
-            letter-spacing: 1px;
         }
-        .grid-compass-label.n {
+        .grid-edge-label.n {
             top: 1%;
             left: 50%;
             transform: translateX(-50%);
+            color: var(--bordo);
         }
-        .grid-compass-label.s {
+        .grid-edge-label.s {
             bottom: 1%;
             left: 50%;
             transform: translateX(-50%);
             color: var(--text-soft);
         }
-        .grid-compass-label.e {
+        .grid-edge-label.e {
             right: 2%;
             top: 50%;
             transform: translateY(-50%);
             color: var(--text-soft);
         }
-        .grid-compass-label.w {
+        .grid-edge-label.w {
             left: 2%;
             top: 50%;
             transform: translateY(-50%);
             color: var(--text-soft);
         }
-        .grid-compass-label.ne {
-            top: 3%;
-            right: 6%;
-            font-size: 8px;
-            color: var(--text-soft);
-        }
-        .grid-compass-label.nw {
-            top: 3%;
-            left: 6%;
-            font-size: 8px;
-            color: var(--text-soft);
-        }
-        .grid-compass-label.se {
-            bottom: 3%;
-            right: 6%;
-            font-size: 8px;
-            color: var(--text-soft);
-        }
-        .grid-compass-label.sw {
-            bottom: 3%;
-            left: 6%;
-            font-size: 8px;
-            color: var(--text-soft);
-        }
 
-        /* План поверх сетки */
+        /* План */
         .plan-layer {
             position: absolute;
             top: 10%;
             left: 10%;
             width: 80%;
             height: 80%;
-            pointer-events: none;
+            pointer-events: auto;
             z-index: 4;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             overflow: visible;
         }
         .plan-layer img {
             position: absolute;
-            pointer-events: auto;
             cursor: move;
             touch-action: none;
             opacity: 0.85;
             max-width: none;
             max-height: none;
-            transform-origin: center center;
+            transform-origin: 0 0;
         }
-
         .grid-hint {
             text-align: center;
             font-size: 11px;
@@ -533,10 +466,13 @@
             color: var(--bordo);
             margin-top: 4px;
         }
-        .btn-mark {
-            margin-top: 10px;
-            padding: 10px 20px;
-            font-size: 12px;
+
+        .actions-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 16px;
         }
 
         /* ===== РЕЗУЛЬТАТ ===== */
@@ -547,6 +483,13 @@
             margin-bottom: 8px;
             border-left: 3px solid var(--bordo);
             font-size: 13px;
+        }
+        .result-card .r-title {
+            font-weight: 600;
+        }
+        .result-card .r-text {
+            font-size: 12px;
+            color: var(--text-soft);
         }
         .summary-num {
             font-family: 'Playfair Display', serif;
@@ -584,14 +527,6 @@
             display: none;
             font-weight: 500;
         }
-
-        .actions-row {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: 16px;
-        }
         .footer-note {
             text-align: center;
             margin-top: 24px;
@@ -602,31 +537,33 @@
 
         @media (max-width: 600px) {
             .container {
-                padding: 20px 14px;
+                padding: 16px 10px;
             }
             h1 {
                 font-size: 24px;
             }
             .compass-wrap {
-                width: 120px;
-                height: 120px;
+                width: 110px;
+                height: 110px;
             }
-            .compass-bg {
-                width: 120px;
-                height: 120px;
+            .compass-outer {
+                width: 110px;
+                height: 110px;
             }
-            .compass-north,
-            .compass-south,
-            .compass-east,
-            .compass-west {
-                font-size: 10px;
+            .compass-mark.n {
+                font-size: 12px;
             }
-            .compass-needle,
-            .compass-needle-south {
-                height: 42px;
+            .compass-mark.s,
+            .compass-mark.e,
+            .compass-mark.w {
+                font-size: 9px;
             }
-            .compass-tick {
-                transform-origin: center 58px;
+            .compass-arrow-n,
+            .compass-arrow-s {
+                height: 36px;
+            }
+            .compass-arrow-n {
+                margin-top: -36px;
             }
             .grid-cell {
                 font-size: 7px;
@@ -642,7 +579,7 @@
 
 <div class="container">
 
-    <!-- ===== ЭКРАН ЗАГРУЗКИ ===== -->
+    <!-- ===== ЭКРАН 1: ЗАГРУЗКА ===== -->
     <div id="screenUpload" class="screen active">
         <div class="subtitle">Блок 2 &bull; Васту-компас</div>
         <h1>Где <span class="accent-text">твоя</span> точка опоры</h1>
@@ -663,32 +600,32 @@
         </div>
 
         <div class="actions-row">
-            <button type="button" class="btn btn-outline" id="btnSkip">НЕТ ПЛАНА — РАБОТАТЬ С СЕТКОЙ</button>
+            <button type="button" class="btn btn-outline" id="btnSkip">БЕЗ ПЛАНА — РАБОТАТЬ С СЕТКОЙ</button>
             <button type="button" class="btn btn-primary" id="btnToCompass" disabled>ДАЛЕЕ С ПЛАНОМ</button>
         </div>
     </div>
 
-    <!-- ===== ЭКРАН КОМПАСА + СЕТКИ ===== -->
+    <!-- ===== ЭКРАН 2: КОМПАС + СЕТКА ===== -->
     <div id="screenCompass" class="screen">
         <div class="subtitle">Блок 2 &bull; Васту-компас</div>
         <h1>Поверни <span class="accent-text">север</span> и сверь зоны</h1>
         <p class="description">
-            Вращай компас пальцем. Север на сетке должен совпасть с реальным севером в квартире.
+            Вращай компас пальцем. Сетка поворачивается вместе с ним.
             Нажимай на зоны — увидишь, что должно быть, а чего быть не должно.
         </p>
 
         <!-- КОМПАС -->
         <div class="compass-section">
             <div class="compass-label">Вращай компас пальцем</div>
-            <div class="compass-wrap" id="compassWrap">
-                <div class="compass-bg" id="compassBg">
-                    <div class="compass-needle" id="compassNeedle"></div>
-                    <div class="compass-needle-south" id="compassNeedleSouth"></div>
-                    <div class="compass-north">N</div>
-                    <div class="compass-south">S</div>
-                    <div class="compass-east">E</div>
-                    <div class="compass-west">W</div>
-                    <div class="compass-center"></div>
+            <div class="compass-wrap">
+                <div class="compass-outer" id="compassOuter">
+                    <div class="compass-arrow-n"></div>
+                    <div class="compass-arrow-s"></div>
+                    <div class="compass-mark n">N</div>
+                    <div class="compass-mark s">S</div>
+                    <div class="compass-mark e">E</div>
+                    <div class="compass-mark w">W</div>
+                    <div class="compass-center-dot"></div>
                 </div>
             </div>
             <div class="compass-degree" id="compassDeg">Север: 0&deg;</div>
@@ -696,7 +633,7 @@
 
         <!-- СЕТКА + ПЛАН -->
         <div class="grid-section" id="gridSection">
-            <div class="grid-container" id="gridContainer">
+            <div class="grid-inner" id="gridInner">
                 <!-- Сетка Васту -->
                 <div class="grid-vastu" id="gridVastu">
                     <div class="grid-cell" data-zone="northwest"><span class="cell-label">С-З</span></div>
@@ -709,30 +646,26 @@
                     <div class="grid-cell" data-zone="south"><span class="cell-label">Юг</span></div>
                     <div class="grid-cell" data-zone="southeast"><span class="cell-label">Ю-В</span></div>
                 </div>
-                <!-- Подписи сторон света на сетке -->
-                <div class="grid-compass-label n">N</div>
-                <div class="grid-compass-label s">S</div>
-                <div class="grid-compass-label e">E</div>
-                <div class="grid-compass-label w">W</div>
-                <div class="grid-compass-label ne">NE</div>
-                <div class="grid-compass-label nw">NW</div>
-                <div class="grid-compass-label se">SE</div>
-                <div class="grid-compass-label sw">SW</div>
-                <!-- Слой с планом -->
+                <!-- Подписи сторон света -->
+                <div class="grid-edge-label n">N</div>
+                <div class="grid-edge-label s">S</div>
+                <div class="grid-edge-label e">E</div>
+                <div class="grid-edge-label w">W</div>
+                <!-- План -->
                 <div class="plan-layer" id="planLayer">
                     <img id="planImage" alt="План" style="display:none;">
                 </div>
             </div>
         </div>
-        <div class="grid-hint" id="gridHintPlan" style="display:none;">Двигай и масштабируй план двумя пальцами, чтобы подогнать под сетку</div>
-        <div class="grid-hint" id="gridHintNoPlan">Нажимай на зоны, чтобы узнать, что должно быть в каждой</div>
+        <div class="grid-hint" id="gridHintPlan" style="display:none;">Двигай план одним пальцем. Двумя — масштабируй.</div>
+        <div class="grid-hint" id="gridHintNoPlan">Нажимай на зоны, чтобы узнать, что должно быть в каждой.</div>
 
         <!-- ТУЛТИП -->
         <div class="tooltip-box" id="tooltipBox">
             <div class="zone-title" id="tipTitle"></div>
             <div class="good" id="tipGood"></div>
             <div class="bad" id="tipBad"></div>
-            <button type="button" class="btn btn-outline btn-mark" id="btnMark">ОТМЕТИТЬ КАК ПРОБЛЕМНУЮ</button>
+            <button type="button" class="btn btn-outline" id="btnMark" style="margin-top:10px;padding:10px 20px;font-size:12px;">ОТМЕТИТЬ КАК ПРОБЛЕМНУЮ</button>
         </div>
 
         <div class="actions-row">
@@ -741,7 +674,7 @@
         </div>
     </div>
 
-    <!-- ===== ЭКРАН РЕЗУЛЬТАТА ===== -->
+    <!-- ===== ЭКРАН 3: РЕЗУЛЬТАТ ===== -->
     <div id="screenResult" class="screen">
         <div class="subtitle">Блок 2 &bull; Результат</div>
         <h1>Твой <span class="accent-text">Васту-разбор</span></h1>
@@ -753,7 +686,7 @@
         <div id="resultList"></div>
 
         <div class="send-block">
-            <p style="font-size:13px;color:var(--text-soft);margin-bottom:10px;">Хочешь полную диагностику и корректировку пространства? Оставь ник.</p>
+            <p style="font-size:13px;color:var(--text-soft);margin-bottom:10px;">Хочешь полную диагностику и корректировку? Оставь ник.</p>
             <input type="text" id="sendNick" placeholder="твой_ник_в_телеграм">
             <button type="button" class="btn btn-primary" id="btnSend">ОТПРАВИТЬ НА ДИАГНОСТИКУ</button>
             <div class="send-success" id="sendOk">Отправлено! Я напишу тебе.</div>
@@ -833,20 +766,14 @@
     var marked = {};
     zoneKeys.forEach(function(k) { marked[k] = false; });
 
-    var compassAngle = 0;       // градусы поворота компаса
+    var compassAngle = 0;
     var hasPlan = false;
     var currentZone = null;
 
-    // План: трансформации
+    // План
     var planX = 0, planY = 0, planScale = 1;
-    var planDragActive = false;
-    var planLastX = 0, planLastY = 0;
-    var planStartDist = 0;
-    var planStartScale = 1;
-    var planStartX = 0, planStartY = 0;
-    var planPinchActive = false;
 
-    // ===== DOM-ЭЛЕМЕНТЫ =====
+    // ===== УТИЛИТЫ =====
     function $(id) { return document.getElementById(id); }
 
     function show(id) {
@@ -877,7 +804,9 @@
 
     btnToCompass.addEventListener('click', function() {
         hasPlan = true;
-        loadPlanImage(uploadPreview.src);
+        $('planImage').src = uploadPreview.src;
+        planX = 0; planY = 0; planScale = 1;
+        applyPlan();
         goToCompass();
     });
     $('btnSkip').addEventListener('click', function() {
@@ -886,19 +815,12 @@
     });
 
     function goToCompass() {
-        updateGridVisuals();
         updatePlanVisibility();
+        updateGridRotation();
+        refreshCells();
         $('tooltipBox').classList.remove('active');
         updateCompassVisual();
         show('screenCompass');
-    }
-
-    function loadPlanImage(src) {
-        $('planImage').src = src;
-        $('planImage').style.display = 'block';
-        // Сброс трансформаций
-        planX = 0; planY = 0; planScale = 1;
-        applyPlanTransform();
     }
 
     function updatePlanVisibility() {
@@ -913,101 +835,77 @@
         }
     }
 
-    function applyPlanTransform() {
+    function applyPlan() {
         var img = $('planImage');
         img.style.transform = 'translate(' + planX + 'px, ' + planY + 'px) scale(' + planScale + ')';
     }
 
     // ===== ЭКРАН 2: КОМПАС + СЕТКА =====
 
-    // --- КОМПАС с вращением пальцем ---
-    var compassBg = $('compassBg');
-    var compassDragActive = false;
+    // --- КОМПАС ---
+    var compassOuter = $('compassOuter');
+    var compassDragging = false;
     var compassStartAngle = 0;
-    var compassStartTouchAngle = 0;
+    var compassStartTouch = 0;
 
-    function getAngleFromCenter(x, y, rect) {
+    function getAngle(x, y, rect) {
         var cx = rect.left + rect.width / 2;
         var cy = rect.top + rect.height / 2;
         return Math.atan2(y - cy, x - cx) * 180 / Math.PI;
     }
 
-    compassBg.addEventListener('pointerdown', function(e) {
-        compassDragActive = true;
-        compassBg.classList.add('dragging');
-        compassBg.setPointerCapture(e.pointerId);
-        var rect = compassBg.getBoundingClientRect();
+    compassOuter.addEventListener('pointerdown', function(e) {
+        compassDragging = true;
+        compassOuter.setPointerCapture(e.pointerId);
+        var rect = compassOuter.getBoundingClientRect();
         compassStartAngle = compassAngle;
-        compassStartTouchAngle = getAngleFromCenter(e.clientX, e.clientY, rect);
+        compassStartTouch = getAngle(e.clientX, e.clientY, rect);
     });
 
     window.addEventListener('pointermove', function(e) {
-        if (!compassDragActive) return;
-        var rect = compassBg.getBoundingClientRect();
-        var currentTouchAngle = getAngleFromCenter(e.clientX, e.clientY, rect);
-        var delta = currentTouchAngle - compassStartTouchAngle;
-        // Нормализация
+        if (!compassDragging) return;
+        var rect = compassOuter.getBoundingClientRect();
+        var currentTouch = getAngle(e.clientX, e.clientY, rect);
+        var delta = currentTouch - compassStartTouch;
         if (delta > 180) delta -= 360;
         if (delta < -180) delta += 360;
         compassAngle = (compassStartAngle + delta + 360) % 360;
         updateCompassVisual();
-        updateGridVisuals();
+        updateGridRotation();
     });
 
     window.addEventListener('pointerup', function(e) {
-        if (!compassDragActive) return;
-        compassDragActive = false;
-        compassBg.classList.remove('dragging');
-        compassBg.releasePointerCapture(e.pointerId);
+        if (!compassDragging) return;
+        compassDragging = false;
+        compassOuter.releasePointerCapture(e.pointerId);
     });
 
     function updateCompassVisual() {
-        // Вращаем фон компаса с метками
-        compassBg.style.transform = 'rotate(' + compassAngle + 'deg)';
+        compassOuter.style.transform = 'rotate(' + compassAngle + 'deg)';
         $('compassDeg').textContent = 'Север: ' + Math.round(compassAngle) + '\u00B0';
     }
 
-    function updateGridVisuals() {
-        // Поворачиваем сетку Васту вместе с компасом
+    function updateGridRotation() {
         $('gridVastu').style.transform = 'rotate(' + compassAngle + 'deg)';
-        // Подписи сторон света тоже вращаем, чтобы они соответствовали
-        var labels = document.querySelectorAll('.grid-compass-label');
-        labels.forEach(function(l) {
-            l.style.transform = l.classList.contains('n') ? 'translateX(-50%) rotate(' + compassAngle + 'deg)' :
-                                l.classList.contains('s') ? 'translateX(-50%) rotate(' + compassAngle + 'deg)' :
-                                l.classList.contains('e') ? 'translateY(-50%) rotate(' + compassAngle + 'deg)' :
-                                l.classList.contains('w') ? 'translateY(-50%) rotate(' + compassAngle + 'deg)' :
-                                'rotate(' + compassAngle + 'deg)';
-        });
     }
 
     // --- СЕТКА: КЛИКИ ПО ЗОНАМ ---
-    var gridCells = document.querySelectorAll('.grid-cell');
-    gridCells.forEach(function(cell) {
-        cell.addEventListener('click', function(e) {
-            e.stopPropagation();
-            var zone = cell.getAttribute('data-zone');
-            showTip(zone);
-        });
-    });
-
-    function refreshGridCells() {
-        gridCells = document.querySelectorAll('.grid-cell');
-        gridCells.forEach(function(cell) {
+    function refreshCells() {
+        var cells = document.querySelectorAll('.grid-cell');
+        cells.forEach(function(cell) {
             var zone = cell.getAttribute('data-zone');
             if (marked[zone]) {
                 cell.classList.add('marked');
             } else {
                 cell.classList.remove('marked');
             }
-            // Убираем старый обработчик (через новый назначим)
-            cell.onclick = null;
-            cell.addEventListener('click', function(e) {
+            cell.onclick = function(e) {
                 e.stopPropagation();
-                showTip(cell.getAttribute('data-zone'));
-            });
+                showTip(zone);
+            };
         });
     }
+    refreshCells();
 
     function showTip(zone) {
         currentZone = zone;
@@ -1027,101 +925,96 @@
     $('btnMark').addEventListener('click', function() {
         if (!currentZone) return;
         marked[currentZone] = !marked[currentZone];
-        refreshGridCells();
+        refreshCells();
         showTip(currentZone);
     });
 
-    // --- ПЛАН: DRAG И PINCH-TO-ZOOM ---
+    // --- ПЛАН: DRAG ОДНИМ ПАЛЬЦЕМ, PINCH ДВУМЯ ---
     var planImage = $('planImage');
+    var planDragOn = false;
+    var planDragLastX = 0, planDragLastY = 0;
+    var planDragStartX = 0, planDragStartY = 0;
+    var planPinching = false;
+    var pinchStartDist = 0;
+    var pinchStartScale = 1;
+    var pinchStartX = 0, pinchStartY = 0;
+    var pinchMidX = 0, pinchMidY = 0;
+    var gridSection = $('gridSection');
 
     planImage.addEventListener('pointerdown', function(e) {
         if (!hasPlan) return;
-        planDragActive = true;
+        planDragOn = true;
         planImage.setPointerCapture(e.pointerId);
-        planLastX = e.clientX;
-        planLastY = e.clientY;
-        planStartX = planX;
-        planStartY = planY;
-        planPinchActive = false;
+        planDragLastX = e.clientX;
+        planDragLastY = e.clientY;
+        planDragStartX = planX;
+        planDragStartY = planY;
+        planPinching = false;
     });
 
     window.addEventListener('pointermove', function(e) {
         if (!hasPlan) return;
+        if (!planDragOn) return;
 
-        // Проверка на pinch (два пальца)
-        var touches = e.targetTouches || [];
-        if (e.pointerType === 'touch' && e.isPrimary === false && planDragActive) {
-            // Второй палец — начинаем pinch
-            planPinchActive = true;
-        }
+        // Если два пальца — работаем в touch-режиме отдельно
+        if (planPinching) return;
 
-        if (planPinchActive && e.pointerType === 'touch') {
-            // Обработка pinch в touch-событиях
-            return;
-        }
-
-        if (!planDragActive || planPinchActive) return;
-
-        var dx = e.clientX - planLastX;
-        var dy = e.clientY - planLastY;
-        planX = planStartX + dx;
-        planY = planStartY + dy;
-        applyPlanTransform();
+        var dx = e.clientX - planDragLastX;
+        var dy = e.clientY - planDragLastY;
+        planX = planDragStartX + dx;
+        planY = planDragStartY + dy;
+        applyPlan();
     });
 
     window.addEventListener('pointerup', function(e) {
         if (!hasPlan) return;
-        planDragActive = false;
-        planPinchActive = false;
-        planImage.releasePointerCapture(e.pointerId);
+        planDragOn = false;
+        planPinching = false;
+        try { planImage.releasePointerCapture(e.pointerId); } catch(ex) {}
     });
 
-    // Pinch-to-zoom через touch-события
-    var gridSection = $('gridSection');
-
+    // Pinch-to-zoom
     gridSection.addEventListener('touchstart', function(e) {
         if (!hasPlan) return;
         if (e.touches.length === 2) {
-            planPinchActive = true;
-            planStartDist = Math.hypot(
+            planPinching = true;
+            planDragOn = false;
+            pinchStartDist = Math.hypot(
                 e.touches[0].clientX - e.touches[1].clientX,
                 e.touches[0].clientY - e.touches[1].clientY
             );
-            planStartScale = planScale;
-            planStartX = planX;
-            planStartY = planY;
+            pinchStartScale = planScale;
+            pinchStartX = planX;
+            pinchStartY = planY;
+            pinchMidX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+            pinchMidY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
         }
     }, { passive: false });
 
     gridSection.addEventListener('touchmove', function(e) {
-        if (!hasPlan || !planPinchActive) return;
+        if (!hasPlan || !planPinching) return;
         if (e.touches.length === 2) {
             e.preventDefault();
             var dist = Math.hypot(
                 e.touches[0].clientX - e.touches[1].clientX,
                 e.touches[0].clientY - e.touches[1].clientY
             );
-            var newScale = planStartScale * (dist / planStartDist);
-            newScale = Math.max(0.3, Math.min(5, newScale));
+            var newScale = pinchStartScale * (dist / pinchStartDist);
+            newScale = Math.max(0.2, Math.min(6, newScale));
             planScale = newScale;
 
-            // Центр между пальцами
-            var cx = (e.touches[0].clientX + e.touches[1].clientX) / 2;
-            var cy = (e.touches[0].clientY + e.touches[1].clientY) / 2;
             var rect = gridSection.getBoundingClientRect();
-            var relX = cx - (rect.left + rect.width / 2);
-            var relY = cy - (rect.top + rect.height / 2);
-
-            planX = planStartX + relX * (1 - newScale / planStartScale);
-            planY = planStartY + relY * (1 - newScale / planStartScale);
-
-            applyPlanTransform();
+            var rx = pinchMidX - (rect.left + rect.width * 0.1);
+            var ry = pinchMidY - (rect.top + rect.height * 0.1);
+            planX = pinchStartX + rx * (1 - newScale / pinchStartScale);
+            planY = pinchStartY + ry * (1 - newScale / pinchStartScale);
+            applyPlan();
         }
     }, { passive: false });
 
     gridSection.addEventListener('touchend', function(e) {
         if (e.touches.length < 2) {
-            planPinchActive = false;
+            planPinching = false;
         }
     });
 
@@ -1140,15 +1033,15 @@
             if (marked[k]) {
                 var d = zoneData[k];
                 html += '<div class="result-card">' +
-                    '<div style="font-weight:600;">&#9888; ' + d.name + '</div>' +
-                    '<div style="font-size:12px;color:var(--text-soft);">' + d.bad.replace('Не должно быть: ', '') + '</div>' +
+                    '<div class="r-title">&#9888; ' + d.name + '</div>' +
+                    '<div class="r-text">' + d.bad.replace('Не должно быть: ', '') + '</div>' +
                     '</div>';
             }
         });
         if (count === 0) {
             html = '<div class="result-card" style="border-left-color:var(--emerald);">' +
-                '<div style="font-weight:600;">Всё чисто</div>' +
-                '<div style="font-size:12px;color:var(--text-soft);">Ты не отметил проблемных зон. Либо пространство в гармонии, либо проверь ещё раз.</div>' +
+                '<div class="r-title">Всё чисто</div>' +
+                '<div class="r-text">Ты не отметил проблемных зон. Либо пространство в гармонии, либо проверь ещё раз.</div>' +
                 '</div>';
         }
         $('resultList').innerHTML = html;
@@ -1173,13 +1066,11 @@
         $('planImage').style.display = 'none';
         $('planImage').style.transform = '';
         $('gridVastu').style.transform = '';
-        var labels = document.querySelectorAll('.grid-compass-label');
-        labels.forEach(function(l) { l.style.transform = ''; });
-        $('tooltipBox').classList.remove('active');
-        currentZone = null;
         updateCompassVisual();
         updatePlanVisibility();
-        refreshGridCells();
+        refreshCells();
+        $('tooltipBox').classList.remove('active');
+        currentZone = null;
         show('screenUpload');
     }
 
@@ -1219,9 +1110,8 @@
         });
     });
 
-    // ===== ИНИЦИАЛИЗАЦИЯ =====
+    // ===== СТАРТ =====
     updateCompassVisual();
-    refreshGridCells();
     updatePlanVisibility();
 
 })();
