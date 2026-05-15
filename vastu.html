@@ -93,19 +93,9 @@
             z-index: 10;
         }
 
-        .btn-primary {
-            background-color: var(--emerald);
-            color: var(--white);
-        }
+        .btn-primary { background-color: var(--emerald); color: var(--white); }
         .btn-primary:active { transform: translateY(0); }
-
-        .btn-outline {
-            background: transparent;
-            border: 1.5px solid var(--emerald);
-            color: var(--emerald);
-            font-weight: 600;
-        }
-
+        .btn-outline { background: transparent; border: 1.5px solid var(--emerald); color: var(--emerald); font-weight: 600; }
         .btn:disabled { opacity: 0.35; cursor: not-allowed; pointer-events: none; }
 
         .upload-zone {
@@ -123,36 +113,15 @@
         .upload-zone .upload-placeholder { display: block; }
         .upload-zone.has-image .upload-placeholder { display: none; }
         .upload-zone input { display: none; }
-        .upload-preview {
-            max-width: 100%;
-            max-height: 200px;
-            border-radius: 8px;
-            display: none;
-        }
+        .upload-preview { max-width: 100%; max-height: 200px; border-radius: 8px; display: none; }
         .upload-zone.has-image .upload-preview { display: block; margin: 0 auto; }
 
         /* КОМПАС */
-        .compass-section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 20px 0;
-        }
-        .compass-label {
-            font-size: 11px;
-            color: var(--text-soft);
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            margin-bottom: 12px;
-        }
-        .compass-wrap {
-            position: relative;
-            width: 130px;
-            height: 130px;
-        }
+        .compass-section { display: flex; flex-direction: column; align-items: center; margin: 20px 0; }
+        .compass-label { font-size: 11px; color: var(--text-soft); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 12px; }
+        .compass-wrap { position: relative; width: 130px; height: 130px; }
         .compass-outer {
-            width: 130px;
-            height: 130px;
+            width: 130px; height: 130px;
             border-radius: 50%;
             background: rgba(242, 235, 221, 0.9);
             border: 2px solid var(--gold);
@@ -164,259 +133,110 @@
         }
         .compass-outer:active { cursor: grabbing; }
         .compass-center-dot {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 10px;
-            height: 10px;
-            background: var(--bordo);
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 5;
-            pointer-events: none;
+            position: absolute; top: 50%; left: 50%;
+            width: 10px; height: 10px;
+            background: var(--bordo); border-radius: 50%;
+            transform: translate(-50%, -50%); z-index: 5; pointer-events: none;
         }
-        .compass-mark {
-            position: absolute;
-            font-weight: 700;
-            pointer-events: none;
-            z-index: 4;
-        }
+        .compass-mark { position: absolute; font-weight: 700; pointer-events: none; z-index: 4; }
         .compass-mark.north { top: 6px; left: 50%; transform: translateX(-50%); color: var(--bordo); font-size: 14px; }
         .compass-mark.south { bottom: 6px; left: 50%; transform: translateX(-50%); color: var(--text-soft); font-size: 11px; }
         .compass-mark.east { right: 8px; top: 50%; transform: translateY(-50%); color: var(--text-soft); font-size: 11px; }
         .compass-mark.west { left: 8px; top: 50%; transform: translateY(-50%); color: var(--text-soft); font-size: 11px; }
-
         .compass-arrow-n {
-            position: absolute;
-            bottom: 50%;
-            left: 50%;
-            width: 2px;
-            height: 42px;
-            background: var(--bordo);
-            transform: translateX(-50%);
-            pointer-events: none;
-            z-index: 3;
-            border-radius: 1px;
+            position: absolute; bottom: 50%; left: 50%;
+            width: 2px; height: 42px; background: var(--bordo);
+            transform: translateX(-50%); pointer-events: none; z-index: 3; border-radius: 1px;
         }
         .compass-arrow-n::after {
-            content: '';
-            position: absolute;
-            top: -6px;
-            left: -5px;
-            width: 12px;
-            height: 12px;
-            background: var(--bordo);
+            content: ''; position: absolute; top: -6px; left: -5px;
+            width: 12px; height: 12px; background: var(--bordo);
             clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
         }
         .compass-arrow-s {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 2px;
-            height: 42px;
-            background: rgba(43, 45, 46, 0.25);
-            transform: translateX(-50%);
-            pointer-events: none;
-            z-index: 2;
-            border-radius: 1px;
+            position: absolute; top: 50%; left: 50%;
+            width: 2px; height: 42px; background: rgba(43, 45, 46, 0.25);
+            transform: translateX(-50%); pointer-events: none; z-index: 2; border-radius: 1px;
         }
-
-        .compass-degree {
-            font-size: 12px;
-            color: var(--text-soft);
-            margin-top: 8px;
-            letter-spacing: 0.5px;
-        }
+        .compass-degree { font-size: 12px; color: var(--text-soft); margin-top: 8px; letter-spacing: 0.5px; }
 
         /* СЕТКА */
         .grid-section {
-            position: relative;
-            margin: 20px 0;
-            border-radius: 14px;
-            border: 1px solid rgba(15, 79, 63, 0.15);
-            background: rgba(242, 235, 221, 0.4);
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            max-height: 480px;
-            overflow: hidden;
-            touch-action: none;
+            position: relative; margin: 20px 0;
+            border-radius: 14px; border: 2px solid rgba(15, 79, 63, 0.2);
+            background: rgba(242, 235, 221, 0.5);
+            width: 100%; aspect-ratio: 1 / 1; max-height: 480px;
+            overflow: hidden; touch-action: none;
         }
-        .grid-inner {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-        }
+        .grid-inner { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+
         /* Сетка — сверху, кликабельная */
         .grid-vastu {
-            position: absolute;
-            top: 10%; left: 10%;
-            width: 80%; height: 80%;
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            grid-template-rows: 1fr 1fr 1fr;
-            pointer-events: none;
-            z-index: 5;
-            transition: transform 0.1s linear;
+            position: absolute; top: 10%; left: 10%; width: 80%; height: 80%;
+            display: grid; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr 1fr;
+            pointer-events: none; z-index: 5; transition: transform 0.1s linear;
         }
         .grid-cell {
-            border: 1px solid rgba(15, 79, 63, 0.28);
-            pointer-events: auto;
-            cursor: pointer;
-            position: relative;
-            display: flex;
-            align-items: flex-start;
-            justify-content: flex-start;
-            padding: 4px;
-            font-size: 9px;
-            font-weight: 600;
-            color: rgba(43, 45, 46, 0.7);
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-            line-height: 1.2;
-            background-color: transparent;
+            border: 2px solid rgba(0, 0, 0, 0.55);
+            pointer-events: auto; cursor: pointer;
+            position: relative; display: flex; align-items: flex-start; justify-content: flex-start;
+            padding: 4px; font-size: 10px; font-weight: 700;
+            color: rgba(0, 0, 0, 0.7); text-transform: uppercase;
+            letter-spacing: 0.3px; line-height: 1.2; background-color: transparent;
         }
-        .grid-cell:active { background-color: rgba(15, 79, 63, 0.12); }
+        .grid-cell:active { background-color: rgba(15, 79, 63, 0.15); }
         .grid-cell.marked {
-            background-color: rgba(107, 30, 42, 0.18);
-            border: 2px solid rgba(107, 30, 42, 0.5);
-            color: var(--bordo);
+            background-color: rgba(180, 30, 50, 0.25) !important;
+            border: 3px solid rgba(180, 30, 50, 0.8) !important;
+            color: #8B0000;
         }
-        .grid-cell .cell-label {
-            pointer-events: none;
-            font-size: 9px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-            opacity: 0.7;
-        }
-        .grid-edge-label {
-            position: absolute;
-            font-size: 10px;
-            font-weight: 700;
-            pointer-events: none;
-            z-index: 6;
-        }
+        .grid-cell .cell-label { pointer-events: none; font-size: 10px; font-weight: 700; text-transform: uppercase; opacity: 0.85; }
+
+        .grid-edge-label { position: absolute; font-size: 11px; font-weight: 700; pointer-events: none; z-index: 6; }
         .grid-edge-label.n-label { top: 1%; left: 50%; transform: translateX(-50%); color: var(--bordo); }
         .grid-edge-label.s-label { bottom: 1%; left: 50%; transform: translateX(-50%); color: var(--text-soft); }
         .grid-edge-label.e-label { right: 2%; top: 50%; transform: translateY(-50%); color: var(--text-soft); }
         .grid-edge-label.w-label { left: 2%; top: 50%; transform: translateY(-50%); color: var(--text-soft); }
 
-        /* План — снизу, не кликабельный по умолчанию */
+        /* План — снизу */
         .plan-layer {
-            position: absolute;
-            top: 10%; left: 10%;
-            width: 80%; height: 80%;
-            pointer-events: none;
-            z-index: 2;
-            overflow: visible;
+            position: absolute; top: 10%; left: 10%; width: 80%; height: 80%;
+            pointer-events: none; z-index: 2; overflow: visible;
         }
         .plan-layer img {
-            position: absolute;
-            touch-action: none;
-            opacity: 0.5;
-            max-width: none;
-            max-height: none;
-            transform-origin: 0 0;
+            position: absolute; touch-action: none; opacity: 0.5;
+            max-width: none; max-height: none; transform-origin: 0 0;
         }
-        .plan-layer.active-drag {
-            pointer-events: auto;
-        }
-        .plan-layer.active-drag img {
-            opacity: 0.75;
-            cursor: move;
-        }
+        .plan-layer.active-drag { pointer-events: auto; }
+        .plan-layer.active-drag img { opacity: 0.75; cursor: move; }
 
-        .grid-hint {
-            text-align: center;
-            font-size: 11px;
-            color: var(--text-soft);
-            margin-top: 4px;
-            font-style: italic;
-        }
+        .grid-hint { text-align: center; font-size: 11px; color: var(--text-soft); margin-top: 4px; font-style: italic; }
 
         /* ТУЛТИП */
         .tooltip-box {
-            background: var(--white);
-            border: 1px solid rgba(15, 79, 63, 0.2);
-            border-radius: 12px;
-            padding: 16px 18px;
+            background: var(--white); border: 1px solid rgba(15, 79, 63, 0.2);
+            border-radius: 12px; padding: 16px 18px;
             box-shadow: 0 12px 36px rgba(43, 45, 46, 0.12);
-            font-size: 13px;
-            line-height: 1.7;
-            margin-top: 14px;
-            display: none;
+            font-size: 13px; line-height: 1.7; margin-top: 14px; display: none;
         }
         .tooltip-box.active { display: block; }
-        .tooltip-box .zone-title {
-            font-family: 'Playfair Display', serif;
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--emerald);
-            margin-bottom: 4px;
-        }
-        .tooltip-box .good { color: var(--emerald); margin-top: 8px; }
-        .tooltip-box .bad { color: var(--bordo); margin-top: 4px; }
+        .tooltip-box .zone-title { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: var(--emerald); margin-bottom: 6px; }
+        .tooltip-box .good { color: var(--emerald); margin-top: 10px; }
+        .tooltip-box .bad { color: var(--bordo); margin-top: 6px; }
+        .tooltip-box .extra { color: var(--text-soft); margin-top: 6px; font-size: 12px; }
 
-        .actions-row {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: 16px;
-        }
+        .actions-row { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 16px; }
 
         /* РЕЗУЛЬТАТ */
-        .result-card {
-            background: rgba(242, 235, 221, 0.5);
-            border-radius: 14px;
-            padding: 14px 18px;
-            margin-bottom: 8px;
-            border-left: 3px solid var(--bordo);
-            font-size: 13px;
-        }
+        .result-card { background: rgba(242, 235, 221, 0.5); border-radius: 14px; padding: 14px 18px; margin-bottom: 8px; border-left: 3px solid var(--bordo); font-size: 13px; }
         .result-card .r-title { font-weight: 600; }
         .result-card .r-text { font-size: 12px; color: var(--text-soft); }
-        .summary-num {
-            font-family: 'Playfair Display', serif;
-            font-size: 48px;
-            font-weight: 700;
-            color: var(--bordo);
-            text-align: center;
-            margin: 16px 0 4px;
-        }
-        .send-block {
-            margin-top: 20px;
-            padding-top: 18px;
-            border-top: 1px solid rgba(15, 79, 63, 0.1);
-            text-align: center;
-        }
-        .send-block input {
-            width: 100%;
-            padding: 14px 16px;
-            background: rgba(242, 235, 221, 0.6);
-            border: 1px solid rgba(15, 79, 63, 0.15);
-            border-radius: 10px;
-            color: var(--text-main);
-            font-family: 'Inter', sans-serif;
-            font-size: 14px;
-            margin-bottom: 10px;
-            outline: none;
-        }
+        .summary-num { font-family: 'Playfair Display', serif; font-size: 48px; font-weight: 700; color: var(--bordo); text-align: center; margin: 16px 0 4px; }
+        .send-block { margin-top: 20px; padding-top: 18px; border-top: 1px solid rgba(15, 79, 63, 0.1); text-align: center; }
+        .send-block input { width: 100%; padding: 14px 16px; background: rgba(242, 235, 221, 0.6); border: 1px solid rgba(15, 79, 63, 0.15); border-radius: 10px; color: var(--text-main); font-family: 'Inter', sans-serif; font-size: 14px; margin-bottom: 10px; outline: none; }
         .send-block input:focus { border-color: var(--gold-dark); }
-        .send-success {
-            color: var(--emerald);
-            font-size: 13px;
-            margin-top: 8px;
-            display: none;
-            font-weight: 500;
-        }
-        .footer-note {
-            text-align: center;
-            margin-top: 24px;
-            font-size: 10px;
-            color: rgba(43, 45, 46, 0.3);
-            letter-spacing: 1px;
-        }
+        .send-success { color: var(--emerald); font-size: 13px; margin-top: 8px; display: none; font-weight: 500; }
+        .footer-note { text-align: center; margin-top: 24px; font-size: 10px; color: rgba(43, 45, 46, 0.3); letter-spacing: 1px; }
 
         @media (max-width: 600px) {
             .container { padding: 16px 10px; }
@@ -425,8 +245,8 @@
             .compass-mark.north { font-size: 12px; }
             .compass-mark.south, .compass-mark.east, .compass-mark.west { font-size: 9px; }
             .compass-arrow-n, .compass-arrow-s { height: 34px; }
-            .grid-cell { font-size: 7px; padding: 2px; }
-            .grid-cell .cell-label { font-size: 7px; }
+            .grid-cell { font-size: 8px; padding: 2px; }
+            .grid-cell .cell-label { font-size: 8px; }
         }
     </style>
 </head>
@@ -465,7 +285,7 @@
         <h1>Поверни <span class="accent-text">север</span> и сверь зоны</h1>
         <p class="description">
             Вращай компас пальцем. Сетка поворачивается вместе с ним.
-            Нажимай на зоны.
+            Нажимай на зоны — увидишь, что должно быть, а чего быть не должно.
         </p>
 
         <div class="compass-section">
@@ -513,7 +333,8 @@
             <div class="zone-title" id="tipTitle"></div>
             <div class="good" id="tipGood"></div>
             <div class="bad" id="tipBad"></div>
-            <button type="button" class="btn btn-outline" id="btnMark" style="margin-top:10px;padding:10px 20px;font-size:12px;">ОТМЕТИТЬ КАК ПРОБЛЕМНУЮ</button>
+            <div class="extra" id="tipExtra"></div>
+            <button type="button" class="btn btn-outline" id="btnMark" style="margin-top:12px;padding:10px 20px;font-size:12px;">ОТМЕТИТЬ КАК ПРОБЛЕМНУЮ</button>
         </div>
 
         <div class="actions-row">
@@ -555,57 +376,66 @@
     var zoneData = {
         'north': {
             name: 'Север',
-            title: 'Север — зона финансов и денег',
-            good: 'Должно быть: чистота, вода (фонтан, картина), зеркало, зелень, сейф.',
-            bad: 'Не должно быть: туалет, мусор, кладовка, спальня.'
+            title: 'Север — зона финансов и богатства',
+            good: 'Должно быть: вода (фонтан, аквариум, картина с водой), зеркало, монеты, зелень, сейф.',
+            bad: 'Не должно быть: туалет, мусорное ведро, кладовка, спальня, грязная обувь.',
+            extra: 'Цвета: зелёный, голубой. Стихия: вода.'
         },
         'northeast': {
             name: 'Северо-восток',
-            title: 'Северо-восток — зона мудрости и ясности',
-            good: 'Должно быть: алтарь, книги, чистота, свет, вода.',
-            bad: 'Не должно быть: туалет, спальня, кухня, мусор.'
+            title: 'Северо-восток — зона мудрости, интуиции и ясности',
+            good: 'Должно быть: алтарь, книги, чистота, растения, свет, вода, место для медитации.',
+            bad: 'Не должно быть: туалет, спальня, кухня, тяжёлая мебель, мусор, грязные вещи.',
+            extra: 'Цвета: белый, светло-жёлтый. Стихия: вода + эфир.'
         },
         'east': {
             name: 'Восток',
-            title: 'Восток — зона здоровья и статуса',
-            good: 'Должно быть: окна, свет, открытое пространство, зелень.',
-            bad: 'Не должно быть: туалет, кладовка, спальня.'
+            title: 'Восток — зона здоровья, долголетия и социального статуса',
+            good: 'Должно быть: окна, свет, открытое пространство, живые растения, минимум мебели.',
+            bad: 'Не должно быть: туалет, кладовка, спальня, входная дверь, тяжёлые шкафы.',
+            extra: 'Цвета: белый, светло-зелёный. Стихия: воздух.'
         },
         'southeast': {
             name: 'Юго-восток',
-            title: 'Юго-восток — зона энергии и денежного потока',
-            good: 'Должно быть: кухня, плита, свечи, активность.',
-            bad: 'Не должно быть: туалет, спальня, ванная.'
+            title: 'Юго-восток — зона энергии, денежного потока и страсти',
+            good: 'Должно быть: кухня, плита, свечи, красный декор, активность, движение.',
+            bad: 'Не должно быть: туалет, спальня, ванная, зеркало напротив плиты.',
+            extra: 'Цвета: красный, оранжевый, розовый. Стихия: огонь.'
         },
         'south': {
             name: 'Юг',
-            title: 'Юг — зона славы и признания',
-            good: 'Должно быть: гостиная, награды, свет, активность.',
-            bad: 'Не должно быть: туалет, ванная, кладовка, спальня.'
+            title: 'Юг — зона славы, признания и уверенности в себе',
+            good: 'Должно быть: гостиная, награды, дипломы, красный/оранжевый декор, хорошее освещение.',
+            bad: 'Не должно быть: туалет, ванная, кладовка, тёмные помещения, спальня.',
+            extra: 'Цвета: красный, оранжевый, золотой. Стихия: огонь.'
         },
         'southwest': {
             name: 'Юго-запад',
-            title: 'Юго-запад — зона стабильности и защиты',
-            good: 'Должно быть: спальня хозяев, тяжёлая мебель, земляные тона.',
-            bad: 'Не должно быть: туалет, входная дверь, кухня.'
+            title: 'Юго-запад — зона стабильности, защиты и брака',
+            good: 'Должно быть: спальня хозяев, тяжёлая мебель, закрытые шкафы, земляные тона, минимум окон.',
+            bad: 'Не должно быть: туалет, входная дверь, кухня, детская комната.',
+            extra: 'Цвета: коричневый, бежевый, терракотовый. Стихия: земля.'
         },
         'west': {
             name: 'Запад',
-            title: 'Запад — зона обучения и творчества',
-            good: 'Должно быть: детская, кабинет, мастерская, книги.',
-            bad: 'Не должно быть: туалет, спальня хозяев, кладовка.'
+            title: 'Запад — зона обучения, творчества и детей',
+            good: 'Должно быть: детская комната, кабинет, мастерская, книги, инструменты, картины.',
+            bad: 'Не должно быть: туалет, спальня хозяев, ванная, кладовка.',
+            extra: 'Цвета: серый, серебристый, белый. Стихия: воздух.'
         },
         'northwest': {
             name: 'Северо-запад',
-            title: 'Северо-запад — зона поддержки и связей',
-            good: 'Должно быть: гостевая, коридор, место для встреч.',
-            bad: 'Не должно быть: туалет, кухня, спальня хозяев.'
+            title: 'Северо-запад — зона поддержки, связей, путешествий и друзей',
+            good: 'Должно быть: гостевая комната, коридор, прихожая, место для встреч, ветряные колокольчики.',
+            bad: 'Не должно быть: туалет, кухня, спальня хозяев, кладовка.',
+            extra: 'Цвета: серый, серебристый, бежевый. Стихия: воздух.'
         },
         'center': {
             name: 'Центр',
-            title: 'Центр — зона баланса и здоровья',
-            good: 'Должно быть: свободное пространство, свет, воздух.',
-            bad: 'Не должно быть: туалет, лестница, тяжёлая мебель, стены.'
+            title: 'Центр — зона баланса и здоровья всей семьи',
+            good: 'Должно быть: свободное пространство, свет, воздух, ничего лишнего. Максимум — журнальный столик.',
+            bad: 'Не должно быть: туалет, лестница, колонны, несущие стены, тяжёлая мебель, кладовка.',
+            extra: 'Цвета: жёлтый, золотой, песочный. Стихия: эфир.'
         }
     };
 
@@ -754,6 +584,7 @@
         $('tipTitle').textContent = d.title;
         $('tipGood').textContent = d.good;
         $('tipBad').textContent = d.bad;
+        $('tipExtra').textContent = d.extra;
 
         if (marked[zone]) {
             $('btnMark').textContent = 'СНЯТЬ ОТМЕТКУ';
