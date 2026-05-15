@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Васту-компас</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F2EBDD;
+    --dark-green: #0F4F3F;
+    --gold: #D4A24C;
+    --burgundy: #6B1E2A;
+    --charcoal: #2B2D2E;
+    --white: #FFFDF9;
+    --radius: 16px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--cream);
+    color: var(--charcoal);
+    min-height: 100vh;
+    overflow: hidden;
+  }
+
+  .screen {
+    display: none;
+    position: fixed;
+    inset: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .screen.active { display: flex; flex-direction: column; }
+
+  /* ─── SCREEN 1 ─── */
+  #screen1 {
+    background: var(--charcoal);
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+    gap: 0;
+  }
+
+  .s1-inner {
+    width: 100%;
+    max-width: 440px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+  }
+
+  .brand-mark {
+    width: 64px;
+    height: 64px;
+  }
+
+  .s1-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 6vw, 40px);
+    font-weight: 700;
+    color: var(--cream);
+    text-align: center;
+    line-height: 1.2;
+    letter-spacing: -0.5px;
+  }
+
+  .s1-title em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .s1-sub {
+    font-size: 13px;
+    font-weight: 300;
+    color: rgba(242,235,221,0.6);
+    text-align: center;
+    line-height: 1.7;
+    max-width: 320px;
+  }
+
+  .drop-zone {
+    width: 100%;
+    border: 1.5px dashed rgba(212,162,76,0.4);
+    border-radius: var(--radius);
+    padding: 36px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    background: rgba(255,253,249,0.03);
+  }
+  .drop-zone:hover, .drop-zone.drag-over {
+    border-color: var(--gold);
+    background: rgba(212,162,76,0.05);
+  }
+  .drop-zone svg { opacity: 0.5; }
+  .drop-zone-text {
+    font-size: 13px;
+    color: rgba(242,235,221,0.5);
+    text-align: center;
+  }
+  .drop-zone-label {
+    font-size: 12px;
+    color: var(--gold);
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  #fileInput { display: none; }
+
+  .file-preview {
+    display: none;
+    width: 100%;
+    border-radius: var(--radius);
+    overflow: hidden;
+    position: relative;
+  }
+  .file-preview img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    display: block;
+  }
+  .file-preview-label {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(15,79,63,0.85);
+    color: var(--cream);
+    font-size: 12px;
+    padding: 8px 14px;
+    font-weight: 500;
+  }
+
+  .btn-row {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+  }
+
+  .btn {
+    flex: 1;
+    padding: 15px 20px;
+    border: none;
+    border-radius: var(--radius);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    letter-spacing: 0.03em;
+    transition: all 0.2s;
+  }
+  .btn-ghost {
+    background: transparent;
+    border: 1.5px solid rgba(242,235,221,0.2);
+    color: rgba(242,235,221,0.7);
+  }
+  .btn-ghost:hover { border-color: rgba(242,235,221,0.5); color: var(--cream); }
+  .btn-primary {
+    background: var(--dark-green);
+    color: var(--cream);
+  }
+  .btn-primary:hover { background: #0d3d30; }
+  .btn-gold {
+    background: var(--gold);
+    color: var(--charcoal);
+    font-weight: 600;
+  }
+  .btn-gold:hover { background: #c49040; }
+  .btn-danger {
+    background: var(--burgundy);
+    color: var(--white);
+  }
+  .btn-danger:hover { background: #5a1923; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  /* ─── SCREEN 2 ─── */
+  #screen2 {
+    background: var(--cream);
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .s2-header {
+    background: var(--charcoal);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-shrink: 0;
+  }
+
+  .s2-header-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    color: var(--cream);
+    font-weight: 600;
+  }
+
+  .s2-nav {
+    display: flex;
+    gap: 8px;
+  }
+
+  .btn-sm {
+    padding: 9px 16px;
+    font-size: 12px;
+    border-radius: 10px;
+  }
+
+  .s2-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .compass-hint {
+    font-size: 11px;
+    color: rgba(43,45,46,0.45);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  /* Compass + Grid wrapper */
+  .compass-stage {
+    position: relative;
+    width: min(340px, 90vw);
+    height: min(340px, 90vw);
+    touch-action: none;
+    user-select: none;
+    flex-shrink: 0;
+  }
+
+  /* Outer compass ring */
+  .compass-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid var(--dark-green);
+    background: radial-gradient(circle at 40% 35%, #fffdf9, #e8e0d0);
+    box-shadow: 0 8px 40px rgba(15,79,63,0.15), inset 0 1px 0 rgba(255,255,255,0.6);
+  }
+
+  /* Cardinal labels */
+  .cardinal {
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--charcoal);
+    z-index: 10;
+    pointer-events: none;
+  }
+  .cardinal.N { top: 6px; left: 50%; transform: translateX(-50%); color: var(--dark-green); }
+  .cardinal.S { bottom: 6px; left: 50%; transform: translateX(-50%); }
+  .cardinal.E { right: 6px; top: 50%; transform: translateY(-50%); }
+  .cardinal.W { left: 6px; top: 50%; transform: translateY(-50%); }
+
+  /* Compass needle */
+  .needle-wrap {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 8;
+  }
+  .needle {
+    width: 4px;
+    height: 70%;
+    position: relative;
+    transform-origin: 50% 100%;
+  }
+  .needle::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 48% solid var(--dark-green);
+  }
+  .needle::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 48% solid var(--burgundy);
+  }
+  .needle-center {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 9;
+  }
+  .needle-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--charcoal);
+    border: 2px solid var(--white);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+
+  /* Vastu grid */
+  .vastu-grid-wrap {
+    position: absolute;
+    inset: 14%;
+    z-index: 5;
+    transform-origin: center center;
+  }
+
+  .vastu-grid {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 2px;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .zone-cell {
+    background: rgba(15,79,63,0.08);
+    border: 1px solid rgba(15,79,63,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+  .zone-cell:hover { background: rgba(15,79,63,0.18); }
+  .zone-cell.center-cell { background: rgba(212,162,76,0.12); border-color: rgba(212,162,76,0.3); }
+  .zone-cell.problematic {
+    background: rgba(107,30,42,0.25) !important;
+    border-color: rgba(107,30,42,0.5) !important;
+  }
+  .zone-cell.problematic::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(107,30,42,0.1);
+    animation: pulse-red 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse-red {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+  }
+
+  .zone-abbr {
+    font-family: 'Playfair Display', serif;
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--dark-green);
+    opacity: 0.7;
+    text-align: center;
+    line-height: 1.2;
+    pointer-events: none;
+    letter-spacing: 0.03em;
+  }
+  .zone-cell.problematic .zone-abbr { color: var(--burgundy); opacity: 0.9; }
+
+  /* Plan image layer */
+  .plan-wrap {
+    width: min(340px, 90vw);
+    height: min(260px, 70vw);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: rgba(43,45,46,0.06);
+    border: 1.5px dashed rgba(43,45,46,0.2);
+    position: relative;
+    touch-action: none;
+    display: none;
+    flex-shrink: 0;
+  }
+  .plan-wrap.has-plan { display: block; }
+  #planCanvas {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+  }
+
+  /* Zone card */
+  .zone-card-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(43,45,46,0.55);
+    align-items: flex-end;
+    justify-content: center;
+    padding: 0 0 0 0;
+  }
+  .zone-card-overlay.open { display: flex; }
+
+  .zone-card {
+    background: var(--white);
+    border-radius: 20px 20px 0 0;
+    width: 100%;
+    max-width: 480px;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 28px 24px 36px;
+    animation: slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes slide-up {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  .zone-card-handle {
+    width: 36px;
+    height: 4px;
+    background: rgba(43,45,46,0.15);
+    border-radius: 2px;
+    margin: 0 auto 20px;
+  }
+
+  .zone-card-direction {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--dark-green);
+    margin-bottom: 4px;
+  }
+
+  .zone-card-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--charcoal);
+    margin-bottom: 4px;
+  }
+
+  .zone-card-resp {
+    font-size: 13px;
+    color: rgba(43,45,46,0.6);
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+
+  .zone-badge-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+
+  .zone-badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+  .badge-element {
+    background: rgba(15,79,63,0.1);
+    color: var(--dark-green);
+  }
+  .badge-color {
+    border: 1.5px solid rgba(43,45,46,0.15);
+    color: var(--charcoal);
+  }
+
+  .zone-section-title {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(43,45,46,0.45);
+    margin-bottom: 8px;
+  }
+
+  .zone-list {
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .zone-list-item {
+    font-size: 13px;
+    color: var(--charcoal);
+    line-height: 1.5;
+    padding-left: 14px;
+    position: relative;
+  }
+  .zone-list-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--gold);
+  }
+  .zone-list-item.bad::before { background: var(--burgundy); }
+
+  .zone-card-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  /* ─── SCREEN 3 ─── */
+  #screen3 {
+    background: var(--charcoal);
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+  }
+
+  .s3-inner {
+    width: 100%;
+    max-width: 440px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .s3-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--cream);
+    text-align: center;
+    line-height: 1.2;
+  }
+
+  .result-counter {
+    width: 100%;
+    background: rgba(255,253,249,0.05);
+    border: 1.5px solid rgba(212,162,76,0.3);
+    border-radius: var(--radius);
+    padding: 24px;
+    text-align: center;
+  }
+
+  .result-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 56px;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .result-label {
+    font-size: 12px;
+    color: rgba(242,235,221,0.5);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .problem-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .problem-item {
+    background: rgba(107,30,42,0.2);
+    border: 1px solid rgba(107,30,42,0.4);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--cream);
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .problem-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--burgundy);
+    flex-shrink: 0;
+  }
+
+  .no-problems {
+    background: rgba(15,79,63,0.15);
+    border: 1px solid rgba(15,79,63,0.3);
+    border-radius: 10px;
+    padding: 16px;
+    font-size: 13px;
+    color: rgba(242,235,221,0.7);
+    text-align: center;
+    width: 100%;
+  }
+
+  .telegram-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .tg-input {
+    width: 100%;
+    background: rgba(255,253,249,0.07);
+    border: 1.5px solid rgba(242,235,221,0.15);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: var(--cream);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .tg-input::placeholder { color: rgba(242,235,221,0.3); }
+  .tg-input:focus { border-color: rgba(212,162,76,0.5); }
+
+  .success-block {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    text-align: center;
+  }
+  .success-block.show { display: flex; }
+
+  .success-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgba(15,79,63,0.2);
+    border: 2px solid var(--dark-green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .success-text {
+    font-size: 14px;
+    color: rgba(242,235,221,0.7);
+    line-height: 1.6;
+  }
+
+  .divider-line {
+    width: 100%;
+    height: 1px;
+    background: rgba(242,235,221,0.1);
+  }
+
+  .btn-back-s3 {
+    background: transparent;
+    border: none;
+    color: rgba(242,235,221,0.4);
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    padding: 4px;
+  }
+  .btn-back-s3:hover { color: rgba(242,235,221,0.7); }
+
+  /* Loader */
+  .loader {
+    display: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(43,45,46,0.2);
+    border-top-color: var(--charcoal);
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    margin: 0 auto;
+  }
+  .loader.show { display: block; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════ SCREEN 1 ═══════════════════ -->
+<section id="screen1" class="screen active">
+  <div class="s1-inner">
+
+    <svg class="brand-mark" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="32" cy="32" r="30" stroke="#D4A24C" stroke-width="1.5"/>
+      <circle cx="32" cy="32" r="20" stroke="#D4A24C" stroke-width="0.75" stroke-dasharray="3 3"/>
+      <line x1="32" y1="4" x2="32" y2="60" stroke="#D4A24C" stroke-width="0.75" opacity="0.4"/>
+      <line x1="4" y1="32" x2="60" y2="32" stroke="#D4A24C" stroke-width="0.75" opacity="0.4"/>
+      <polygon points="32,8 35,28 32,26 29,28" fill="#0F4F3F"/>
+      <polygon points="32,56 35,36 32,38 29,36" fill="#6B1E2A"/>
+      <circle cx="32" cy="32" r="4" fill="#D4A24C"/>
+    </svg>
+
+    <div>
+      <h1 class="s1-title">Васту-<em>компас</em></h1>
+    </div>
+    <p class="s1-sub">Определите энергетические зоны вашего пространства по древней системе Васту Шастра</p>
+
+    <div class="drop-zone" id="dropZone">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+        <rect x="4" y="6" width="24" height="20" rx="2" stroke="#D4A24C" stroke-width="1.5"/>
+        <path d="M4 22l7-7 5 5 4-4 8 6" stroke="#D4A24C" stroke-width="1.5" stroke-linejoin="round"/>
+        <circle cx="11" cy="13" r="2" fill="#D4A24C" opacity="0.6"/>
+      </svg>
+      <span class="drop-zone-label">Загрузить план</span>
+      <span class="drop-zone-text">JPG, PNG — план вашей квартиры или дома</span>
+      <input type="file" id="fileInput" accept="image/*">
+    </div>
+
+    <div class="file-preview" id="filePreview">
+      <img id="previewImg" src="" alt="план">
+      <div class="file-preview-label" id="previewLabel">план загружен</div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-ghost" id="btnNoPlan">Без плана</button>
+      <button class="btn btn-primary" id="btnWithPlan">Далее с планом</button>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════ SCREEN 2 ═══════════════════ -->
+<section id="screen2" class="screen">
+
+  <div class="s2-header">
+    <span class="s2-header-title">Васту-компас</span>
+    <div class="s2-nav">
+      <button class="btn btn-ghost btn-sm" id="btnBack1">← Назад</button>
+      <button class="btn btn-gold btn-sm" id="btnResult">Результат</button>
+    </div>
+  </div>
+
+  <div class="s2-body">
+    <p class="compass-hint">Вращайте компас пальцем</p>
+
+    <div class="compass-stage" id="compassStage">
+      <div class="compass-ring"></div>
+      <span class="cardinal N">N</span>
+      <span class="cardinal S">S</span>
+      <span class="cardinal E">E</span>
+      <span class="cardinal W">W</span>
+
+      <div class="vastu-grid-wrap" id="gridWrap">
+        <div class="vastu-grid" id="vastuGrid">
+          <!-- cells injected by JS -->
+        </div>
+      </div>
+
+      <div class="needle-wrap">
+        <div class="needle" id="needle"></div>
+      </div>
+      <div class="needle-center">
+        <div class="needle-dot"></div>
+      </div>
+    </div>
+
+    <div class="plan-wrap" id="planWrap">
+      <canvas id="planCanvas"></canvas>
+    </div>
+
+    <p class="compass-hint" id="markHint" style="display:none;">Нажмите на зону чтобы узнать о ней подробнее</p>
+
+  </div>
+</section>
+
+<!-- ═══════════════════ SCREEN 3 ═══════════════════ -->
+<section id="screen3" class="screen">
+  <div class="s3-inner">
+
+    <button class="btn-back-s3" id="btnBack2">← вернуться</button>
+
+    <h2 class="s3-title">Диагностика<br>пространства</h2>
+
+    <div class="result-counter">
+      <div class="result-number" id="problemCount">0</div>
+      <div class="result-label">проблемных зон</div>
+    </div>
+
+    <div class="problem-list" id="problemList"></div>
+
+    <div class="divider-line"></div>
+
+    <div class="telegram-form" id="tgForm">
+      <input class="tg-input" type="text" id="tgNick" placeholder="Ваш ник в Telegram (@username)">
+      <button class="btn btn-gold" id="btnSend">Отправить на диагностику</button>
+      <div class="loader" id="loader"></div>
+    </div>
+
+    <div class="success-block" id="successBlock">
+      <div class="success-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M5 12l5 5L19 7" stroke="#0F4F3F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <p class="success-text">Заявка отправлена. Виктория свяжется с вами для подробной консультации.</p>
+      <a href="https://t.me/kowiktori" target="_blank" class="btn btn-primary" style="text-decoration:none; text-align:center; display:block; width:100%;">Написать Виктории →</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════ ZONE CARD ═══════════════════ -->
+<div class="zone-card-overlay" id="zoneCardOverlay">
+  <div class="zone-card">
+    <div class="zone-card-handle"></div>
+    <div class="zone-card-direction" id="cardDirection"></div>
+    <div class="zone-card-name" id="cardName"></div>
+    <div class="zone-card-resp" id="cardResp"></div>
+    <div class="zone-badge-row" id="cardBadges"></div>
+    <div class="zone-section-title">Рекомендуется размещать</div>
+    <div class="zone-list" id="cardShould"></div>
+    <div class="zone-section-title">Следует избегать</div>
+    <div class="zone-list" id="cardShouldNot"></div>
+    <div class="zone-card-actions">
+      <button class="btn btn-ghost" style="border-color:rgba(43,45,46,0.2); color:var(--charcoal);" id="cardClose">Закрыть</button>
+      <button class="btn btn-danger" id="cardMark">Отметить как проблемную</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════
+// VASTU ZONE DATA
+// ═══════════════════════════════════════
+const ZONES = [
+  {
+    id: 'NW', direction: 'Северо-запад', name: 'Ваю / Вайю',
+    responsible: 'Движение, изменения, помощники, гости, отношения с окружающим миром',
+    element: 'Воздух', colors: ['Белый', 'Серебряный', 'Светло-серый'],
+    should: ['Гостевая комната', 'Кладовая', 'Столовая', 'Туалет'],
+    shouldNot: ['Спальня хозяина', 'Тяжёлые хранилища', 'Огонь и кухня']
+  },
+  {
+    id: 'N', direction: 'Север', name: 'Кубера',
+    responsible: 'Богатство, изобилие, карьера, финансовые потоки',
+    element: 'Вода', colors: ['Зелёный', 'Голубой', 'Синий'],
+    should: ['Касса, сейф', 'Кабинет', 'Водные объекты', 'Открытое пространство'],
+    shouldNot: ['Тяжёлые конструкции', 'Туалет', 'Кухня', 'Лестница']
+  },
+  {
+    id: 'NE', direction: 'Северо-восток', name: 'Ишан',
+    responsible: 'Духовность, здоровье, ясность ума, интуиция, знания',
+    element: 'Вода / Земля', colors: ['Белый', 'Светло-жёлтый', 'Кремовый'],
+    should: ['Молельная комната, алтарь', 'Медитация', 'Учебная зона', 'Небольшой водоём'],
+    shouldNot: ['Кухня', 'Туалет', 'Спальня', 'Мусор', 'Обувь']
+  },
+  {
+    id: 'W', direction: 'Запад', name: 'Варуна',
+    responsible: 'Прибыль, стабильность, признание, дети, творчество',
+    element: 'Вода', colors: ['Синий', 'Белый', 'Серый'],
+    should: ['Детская комната', 'Столовая', 'Учебное место', 'Спальня гостей'],
+    shouldNot: ['Главный вход', 'Открытый огонь', 'Крупные деревья рядом']
+  },
+  {
+    id: 'C', direction: 'Центр', name: 'Брахмастхан',
+    responsible: 'Сердце дома, жизненная энергия, связь всех зон',
+    element: 'Эфир / Акаша', colors: ['Золотой', 'Жёлтый', 'Белый'],
+    should: ['Открытое пространство', 'Лёгкий декор', 'Хорошая вентиляция'],
+    shouldNot: ['Колонны', 'Туалет', 'Кухня', 'Тяжёлая мебель', 'Лестница']
+  },
+  {
+    id: 'E', direction: 'Восток', name: 'Индра',
+    responsible: 'Здоровье, рост, процветание, социальные связи, слава',
+    element: 'Дерево', colors: ['Зелёный', 'Светло-зелёный', 'Деревянные тона'],
+    should: ['Главный вход', 'Гостиная', 'Веранда', 'Окна и свет'],
+    shouldNot: ['Туалет', 'Спальня', 'Кухня с юга']
+  },
+  {
+    id: 'SW', direction: 'Юго-запад', name: 'Найрути',
+    responsible: 'Стабильность, отношения, здоровье главы семьи, сила и защита',
+    element: 'Земля', colors: ['Коричневый', 'Бежевый', 'Персиковый'],
+    should: ['Спальня хозяина', 'Тяжёлые предметы', 'Сейф', 'Шкафы'],
+    shouldNot: ['Главный вход', 'Открытый огонь', 'Водоём', 'Туалет', 'Детская']
+  },
+  {
+    id: 'S', direction: 'Юг', name: 'Яма',
+    responsible: 'Репутация, карьера, слава, дисциплина и сила характера',
+    element: 'Огонь', colors: ['Красный', 'Оранжевый', 'Розовый'],
+    should: ['Спальня', 'Тяжёлые стены', 'Закрытое хранилище'],
+    shouldNot: ['Главный вход', 'Водоём', 'Окна большие', 'Кухня']
+  },
+  {
+    id: 'SE', direction: 'Юго-восток', name: 'Агни',
+    responsible: 'Огонь, энергия, пищеварение, финансовая активность, здоровье',
+    element: 'Огонь', colors: ['Оранжевый', 'Красный', 'Розовый'],
+    should: ['Кухня', 'Электрические приборы', 'Серверная', 'Бойлерная'],
+    shouldNot: ['Спальня', 'Водоём', 'Туалет', 'Детская']
+  }
+];
+
+// Grid order (row by row, top=N)
+// NW  N  NE
+//  W  C   E
+// SW  S  SE
+const GRID_ORDER = ['NW','N','NE','W','C','E','SW','S','SE'];
+
+// ═══════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════
+let compassAngle = 0;
+let problematic = new Set();
+let activeZoneId = null;
+let planImage = null;
+let planX = 0, planY = 0, planScale = 1;
+
+// ═══════════════════════════════════════
+// SCREENS
+// ═══════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ═══════════════════════════════════════
+// BUILD GRID
+// ═══════════════════════════════════════
+function buildGrid() {
+  const grid = document.getElementById('vastuGrid');
+  grid.innerHTML = '';
+  GRID_ORDER.forEach(id => {
+    const zone = ZONES.find(z => z.id === id);
+    const cell = document.createElement('div');
+    cell.className = 'zone-cell' + (id === 'C' ? ' center-cell' : '');
+    cell.dataset.zoneId = id;
+    const abbr = document.createElement('div');
+    abbr.className = 'zone-abbr';
+    abbr.textContent = zone.direction.split(' ').map(w => w[0]).join('').slice(0,2);
+    cell.appendChild(abbr);
+    cell.addEventListener('click', e => { e.stopPropagation(); openZoneCard(id); });
+    grid.appendChild(cell);
+  });
+}
+
+function updateGridCells() {
+  document.querySelectorAll('.zone-cell').forEach(cell => {
+    const id = cell.dataset.zoneId;
+    if (problematic.has(id)) cell.classList.add('problematic');
+    else cell.classList.remove('problematic');
+  });
+}
+
+// ═══════════════════════════════════════
+// ZONE CARD
+// ═══════════════════════════════════════
+function openZoneCard(zoneId) {
+  activeZoneId = zoneId;
+  const zone = ZONES.find(z => z.id === zoneId);
+  document.getElementById('cardDirection').textContent = zone.direction;
+  document.getElementById('cardName').textContent = zone.name;
+  document.getElementById('cardResp').textContent = zone.responsible;
+
+  const badges = document.getElementById('cardBadges');
+  badges.innerHTML = `<span class="zone-badge badge-element">${zone.element}</span>`
+    + zone.colors.map(c => `<span class="zone-badge badge-color">${c}</span>`).join('');
+
+  const should = document.getElementById('cardShould');
+  should.innerHTML = zone.should.map(i => `<div class="zone-list-item">${i}</div>`).join('');
+
+  const shouldNot = document.getElementById('cardShouldNot');
+  shouldNot.innerHTML = zone.shouldNot.map(i => `<div class="zone-list-item bad">${i}</div>`).join('');
+
+  const markBtn = document.getElementById('cardMark');
+  if (problematic.has(zoneId)) {
+    markBtn.textContent = 'Снять отметку';
+    markBtn.className = 'btn btn-ghost';
+    markBtn.style.borderColor = 'rgba(43,45,46,0.2)';
+    markBtn.style.color = 'var(--charcoal)';
+  } else {
+    markBtn.textContent = 'Отметить как проблемную';
+    markBtn.className = 'btn btn-danger';
+    markBtn.style = '';
+  }
+
+  document.getElementById('zoneCardOverlay').classList.add('open');
+  document.getElementById('markHint').style.display = 'block';
+}
+
+function closeZoneCard() {
+  document.getElementById('zoneCardOverlay').classList.remove('open');
+}
+
+document.getElementById('cardClose').addEventListener('click', closeZoneCard);
+document.getElementById('zoneCardOverlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('zoneCardOverlay')) closeZoneCard();
+});
+
+document.getElementById('cardMark').addEventListener('click', () => {
+  if (!activeZoneId) return;
+  if (problematic.has(activeZoneId)) problematic.delete(activeZoneId);
+  else problematic.add(activeZoneId);
+  updateGridCells();
+  openZoneCard(activeZoneId); // refresh card
+});
+
+// ═══════════════════════════════════════
+// COMPASS ROTATION
+// ═══════════════════════════════════════
+const stage = document.getElementById('compassStage');
+let isDragging = false;
+let startAngle = 0;
+let startCompassAngle = 0;
+
+function getAngle(cx, cy, x, y) {
+  return Math.atan2(y - cy, x - cx) * 180 / Math.PI;
+}
+
+function applyRotation(angle) {
+  compassAngle = angle;
+  document.getElementById('gridWrap').style.transform = `rotate(${angle}deg)`;
+  document.getElementById('needle').style.transform = `rotate(${-angle}deg)`;
+}
+
+function stageCenter() {
+  const r = stage.getBoundingClientRect();
+  return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+}
+
+stage.addEventListener('pointerdown', e => {
+  if (e.target.closest('.zone-cell')) return;
+  isDragging = true;
+  stage.setPointerCapture(e.pointerId);
+  const c = stageCenter();
+  startAngle = getAngle(c.x, c.y, e.clientX, e.clientY);
+  startCompassAngle = compassAngle;
+  e.preventDefault();
+});
+
+stage.addEventListener('pointermove', e => {
+  if (!isDragging) return;
+  const c = stageCenter();
+  const current = getAngle(c.x, c.y, e.clientX, e.clientY);
+  const delta = current - startAngle;
+  applyRotation(startCompassAngle + delta);
+});
+
+stage.addEventListener('pointerup', () => { isDragging = false; });
+stage.addEventListener('pointercancel', () => { isDragging = false; });
+
+// ═══════════════════════════════════════
+// PLAN IMAGE — drag & pinch
+// ═══════════════════════════════════════
+const planWrap = document.getElementById('planWrap');
+const planCanvas = document.getElementById('planCanvas');
+const ctx = planCanvas.getContext('2d');
+let planPointers = {};
+let lastPinchDist = null;
+
+function drawPlan() {
+  if (!planImage) return;
+  const w = planCanvas.width, h = planCanvas.height;
+  ctx.clearRect(0, 0, w, h);
+  ctx.save();
+  ctx.translate(planX + w/2, planY + h/2);
+  ctx.scale(planScale, planScale);
+  ctx.drawImage(planImage, -planImage.width/2, -planImage.height/2);
+  ctx.restore();
+}
+
+function resizePlanCanvas() {
+  const r = planWrap.getBoundingClientRect();
+  planCanvas.width = r.width;
+  planCanvas.height = r.height;
+  drawPlan();
+}
+
+function pinchDist(ps) {
+  const arr = Object.values(ps);
+  if (arr.length < 2) return null;
+  const dx = arr[0].x - arr[1].x;
+  const dy = arr[0].y - arr[1].y;
+  return Math.sqrt(dx*dx + dy*dy);
+}
+
+planWrap.addEventListener('pointerdown', e => {
+  planPointers[e.pointerId] = { x: e.clientX, y: e.clientY };
+  planWrap.setPointerCapture(e.pointerId);
+  if (Object.keys(planPointers).length === 2) {
+    lastPinchDist = pinchDist(planPointers);
+  }
+  e.preventDefault();
+});
+
+planWrap.addEventListener('pointermove', e => {
+  const prev = planPointers[e.pointerId];
+  if (!prev) return;
+  const curr = { x: e.clientX, y: e.clientY };
+  const keys = Object.keys(planPointers);
+
+  if (keys.length === 1) {
+    // drag
+    planX += curr.x - prev.x;
+    planY += curr.y - prev.y;
+  } else if (keys.length === 2) {
+    // pinch
+    planPointers[e.pointerId] = curr;
+    const dist = pinchDist(planPointers);
+    if (lastPinchDist) {
+      const ratio = dist / lastPinchDist;
+      planScale = Math.max(0.3, Math.min(5, planScale * ratio));
+    }
+    lastPinchDist = dist;
+  }
+
+  planPointers[e.pointerId] = curr;
+  drawPlan();
+  e.preventDefault();
+});
+
+planWrap.addEventListener('pointerup', e => {
+  delete planPointers[e.pointerId];
+  lastPinchDist = null;
+});
+planWrap.addEventListener('pointercancel', e => {
+  delete planPointers[e.pointerId];
+  lastPinchDist = null;
+});
+
+// ═══════════════════════════════════════
+// FILE UPLOAD
+// ═══════════════════════════════════════
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+const filePreview = document.getElementById('filePreview');
+const previewImg = document.getElementById('previewImg');
+
+dropZone.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file) loadFile(file);
+});
+fileInput.addEventListener('change', () => {
+  if (fileInput.files[0]) loadFile(fileInput.files[0]);
+});
+
+function loadFile(file) {
+  const reader = new FileReader();
+  reader.onload = ev => {
+    previewImg.src = ev.target.result;
+    filePreview.style.display = 'block';
+    document.getElementById('previewLabel').textContent = file.name;
+    // load for canvas
+    planImage = new Image();
+    planImage.onload = () => {
+      resizePlanCanvas();
+    };
+    planImage.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+// ═══════════════════════════════════════
+// NAV BUTTONS
+// ═══════════════════════════════════════
+document.getElementById('btnNoPlan').addEventListener('click', () => {
+  planImage = null;
+  planWrap.classList.remove('has-plan');
+  showScreen('screen2');
+});
+
+document.getElementById('btnWithPlan').addEventListener('click', () => {
+  showScreen('screen2');
+  if (planImage) {
+    planWrap.classList.add('has-plan');
+    setTimeout(() => { resizePlanCanvas(); }, 100);
+  }
+});
+
+document.getElementById('btnBack1').addEventListener('click', () => showScreen('screen1'));
+
+document.getElementById('btnResult').addEventListener('click', () => {
+  buildResultScreen();
+  showScreen('screen3');
+});
+
+document.getElementById('btnBack2').addEventListener('click', () => showScreen('screen2'));
+
+// ═══════════════════════════════════════
+// RESULT SCREEN
+// ═══════════════════════════════════════
+function buildResultScreen() {
+  document.getElementById('problemCount').textContent = problematic.size;
+  const list = document.getElementById('problemList');
+  list.innerHTML = '';
+
+  if (problematic.size === 0) {
+    list.innerHTML = '<div class="no-problems">Проблемных зон не отмечено. Ваше пространство выглядит гармонично!</div>';
+  } else {
+    problematic.forEach(id => {
+      const zone = ZONES.find(z => z.id === id);
+      const item = document.createElement('div');
+      item.className = 'problem-item';
+      item.innerHTML = `<div class="problem-dot"></div><div><strong>${zone.direction}</strong> — ${zone.name}</div>`;
+      list.appendChild(item);
+    });
+  }
+
+  // reset form
+  document.getElementById('tgNick').value = '';
+  document.getElementById('tgForm').style.display = 'flex';
+  document.getElementById('successBlock').classList.remove('show');
+  document.getElementById('loader').classList.remove('show');
+}
+
+// ═══════════════════════════════════════
+// FORMSPREE SEND
+// ═══════════════════════════════════════
+document.getElementById('btnSend').addEventListener('click', async () => {
+  const nick = document.getElementById('tgNick').value.trim();
+  if (!nick) {
+    document.getElementById('tgNick').focus();
+    document.getElementById('tgNick').style.borderColor = 'rgba(107,30,42,0.6)';
+    return;
+  }
+
+  const zones = ZONES.filter(z => problematic.has(z.id)).map(z => `${z.direction} (${z.name})`).join(', ') || 'нет';
+  const count = problematic.size;
+
+  document.getElementById('btnSend').disabled = true;
+  document.getElementById('loader').classList.add('show');
+
+  try {
+    const resp = await fetch('https://formspree.io/f/xwvygpnq', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        'Тест': 'Васту-компас',
+        'Проблемные зоны': zones,
+        'Количество': count,
+        'Ник': nick,
+        'Метка': 'ЛИД С ВАСТУ-КОМПАСА'
+      })
+    });
+
+    document.getElementById('loader').classList.remove('show');
+
+    if (resp.ok) {
+      document.getElementById('tgForm').style.display = 'none';
+      document.getElementById('successBlock').classList.add('show');
+    } else {
+      throw new Error('error');
+    }
+  } catch {
+    document.getElementById('loader').classList.remove('show');
+    document.getElementById('btnSend').disabled = false;
+    alert('Ошибка отправки. Попробуйте ещё раз.');
+  }
+});
+
+document.getElementById('tgNick').addEventListener('input', () => {
+  document.getElementById('tgNick').style.borderColor = '';
+});
+
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+buildGrid();
+window.addEventListener('resize', () => { if (planImage) resizePlanCanvas(); });
+</script>
+</body>
+</html>
