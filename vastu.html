@@ -1,789 +1,1293 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Васту-компас • Проверь своё пространство</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Васту-компас</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F2EBDD;
+    --dark-green: #0F4F3F;
+    --gold: #D4A24C;
+    --burgundy: #6B1E2A;
+    --charcoal: #2B2D2E;
+    --white: #FFFDF9;
+    --radius: 16px;
+  }
 
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    <style>
-        :root {
-            --milk: #F2EBDD;
-            --emerald: #0F4F3F;
-            --gold: #D4A24C;
-            --gold-dark: #b8862c;
-            --bordo: #6B1E2A;
-            --white: #FFFDF9;
-            --text-main: #2B2D2E;
-            --text-soft: rgba(43, 45, 46, 0.65);
-            --card-bg: rgba(255, 253, 249, 0.85);
-            --border-subtle: rgba(15, 79, 63, 0.12);
-        }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--cream);
+    color: var(--charcoal);
+    min-height: 100vh;
+    overflow: hidden;
+  }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+  .screen {
+    display: none;
+    position: fixed;
+    inset: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .screen.active { display: flex; flex-direction: column; }
 
-        body {
-            background-color: var(--milk);
-            font-family: 'Inter', sans-serif;
-            color: var(--text-main);
-            min-height: 100vh;
-            padding: 16px;
-            -webkit-tap-highlight-color: transparent;
-            -webkit-user-select: none;
-            user-select: none;
-        }
+  /* ─── SCREEN 1 ─── */
+  #screen1 {
+    background: var(--charcoal);
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+    gap: 0;
+  }
 
-        .container {
-            max-width: 780px;
-            margin: 0 auto;
-            background: var(--card-bg);
-            border-radius: 24px;
-            padding: 30px 22px;
-            border: 1px solid var(--border-subtle);
-            box-shadow: 0 8px 40px rgba(43, 45, 46, 0.08);
-        }
+  .s1-inner {
+    width: 100%;
+    max-width: 440px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+  }
 
-        .screen { display: none; }
-        .screen.active { display: block; }
+  .brand-mark {
+    width: 64px;
+    height: 64px;
+  }
 
-        .subtitle {
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            color: var(--gold-dark);
-            margin-bottom: 6px;
-            font-weight: 500;
-        }
+  .s1-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 6vw, 40px);
+    font-weight: 700;
+    color: var(--cream);
+    text-align: center;
+    line-height: 1.2;
+    letter-spacing: -0.5px;
+  }
 
-        h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 30px;
-            font-weight: 700;
-            color: var(--text-main);
-            margin-bottom: 8px;
-            line-height: 1.2;
-        }
+  .s1-title em {
+    font-style: italic;
+    color: var(--gold);
+  }
 
-        .accent-text { color: var(--emerald); font-style: italic; }
+  .s1-sub {
+    font-size: 13px;
+    font-weight: 300;
+    color: rgba(242,235,221,0.6);
+    text-align: center;
+    line-height: 1.7;
+    max-width: 320px;
+  }
 
-        .description {
-            font-size: 14px;
-            color: var(--text-soft);
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
+  .drop-zone {
+    width: 100%;
+    border: 1.5px dashed rgba(212,162,76,0.4);
+    border-radius: var(--radius);
+    padding: 36px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s;
+    background: rgba(255,253,249,0.03);
+  }
+  .drop-zone:hover, .drop-zone.drag-over {
+    border-color: var(--gold);
+    background: rgba(212,162,76,0.05);
+  }
+  .drop-zone svg { opacity: 0.5; }
+  .drop-zone-text {
+    font-size: 13px;
+    color: rgba(242,235,221,0.5);
+    text-align: center;
+  }
+  .drop-zone-label {
+    font-size: 12px;
+    color: var(--gold);
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  #fileInput { display: none; }
 
-        .btn {
-            display: inline-block;
-            padding: 14px 30px;
-            font-family: 'Inter', sans-serif;
-            font-size: 13px;
-            font-weight: 500;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            text-decoration: none;
-            touch-action: manipulation;
-            -webkit-appearance: none;
-            position: relative;
-            z-index: 10;
-        }
+  .file-preview {
+    display: none;
+    width: 100%;
+    border-radius: var(--radius);
+    overflow: hidden;
+    position: relative;
+  }
+  .file-preview img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    display: block;
+  }
+  .file-preview-label {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    background: rgba(15,79,63,0.85);
+    color: var(--cream);
+    font-size: 12px;
+    padding: 8px 14px;
+    font-weight: 500;
+  }
 
-        .btn-primary { background-color: var(--emerald); color: var(--white); }
-        .btn-primary:active { transform: translateY(0); }
-        .btn-outline { background: transparent; border: 1.5px solid var(--emerald); color: var(--emerald); font-weight: 600; }
-        .btn:disabled { opacity: 0.35; cursor: not-allowed; pointer-events: none; }
+  .btn-row {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+  }
 
-        .upload-zone {
-            border: 2px dashed rgba(15, 79, 63, 0.25);
-            border-radius: 16px;
-            padding: 36px 24px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background-color: rgba(242, 235, 221, 0.4);
-            margin-bottom: 16px;
-        }
-        .upload-zone:active { border-color: var(--emerald); }
-        .upload-zone.has-image { border-style: solid; border-color: var(--emerald); padding: 12px; }
-        .upload-zone .upload-placeholder { display: block; }
-        .upload-zone.has-image .upload-placeholder { display: none; }
-        .upload-zone input { display: none; }
-        .upload-preview { max-width: 100%; max-height: 200px; border-radius: 8px; display: none; }
-        .upload-zone.has-image .upload-preview { display: block; margin: 0 auto; }
+  .btn {
+    flex: 1;
+    padding: 15px 20px;
+    border: none;
+    border-radius: var(--radius);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    letter-spacing: 0.03em;
+    transition: all 0.2s;
+  }
+  .btn-ghost {
+    background: transparent;
+    border: 1.5px solid rgba(242,235,221,0.2);
+    color: rgba(242,235,221,0.7);
+  }
+  .btn-ghost:hover { border-color: rgba(242,235,221,0.5); color: var(--cream); }
+  .btn-primary {
+    background: var(--dark-green);
+    color: var(--cream);
+  }
+  .btn-primary:hover { background: #0d3d30; }
+  .btn-gold {
+    background: var(--gold);
+    color: var(--charcoal);
+    font-weight: 600;
+  }
+  .btn-gold:hover { background: #c49040; }
+  .btn-danger {
+    background: var(--burgundy);
+    color: var(--white);
+  }
+  .btn-danger:hover { background: #5a1923; }
+  .btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-        /* КОМПАС */
-        .compass-section { display: flex; flex-direction: column; align-items: center; margin: 20px 0; }
-        .compass-label { font-size: 11px; color: var(--text-soft); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 12px; }
-        .compass-wrap { position: relative; width: 130px; height: 130px; }
-        .compass-outer {
-            width: 130px; height: 130px;
-            border-radius: 50%;
-            background: rgba(242, 235, 221, 0.9);
-            border: 2px solid var(--gold);
-            box-shadow: 0 4px 20px rgba(43, 45, 46, 0.08);
-            position: relative;
-            cursor: grab;
-            touch-action: none;
-            transition: transform 0.05s linear;
-        }
-        .compass-outer:active { cursor: grabbing; }
-        .compass-center-dot {
-            position: absolute; top: 50%; left: 50%;
-            width: 10px; height: 10px;
-            background: var(--bordo); border-radius: 50%;
-            transform: translate(-50%, -50%); z-index: 5; pointer-events: none;
-        }
-        .compass-mark { position: absolute; font-weight: 700; pointer-events: none; z-index: 4; }
-        .compass-mark.north { top: 6px; left: 50%; transform: translateX(-50%); color: var(--bordo); font-size: 14px; }
-        .compass-mark.south { bottom: 6px; left: 50%; transform: translateX(-50%); color: var(--text-soft); font-size: 11px; }
-        .compass-mark.east { right: 8px; top: 50%; transform: translateY(-50%); color: var(--text-soft); font-size: 11px; }
-        .compass-mark.west { left: 8px; top: 50%; transform: translateY(-50%); color: var(--text-soft); font-size: 11px; }
-        .compass-arrow-n {
-            position: absolute; bottom: 50%; left: 50%;
-            width: 2px; height: 42px; background: var(--bordo);
-            transform: translateX(-50%); pointer-events: none; z-index: 3; border-radius: 1px;
-        }
-        .compass-arrow-n::after {
-            content: ''; position: absolute; top: -6px; left: -5px;
-            width: 12px; height: 12px; background: var(--bordo);
-            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-        }
-        .compass-arrow-s {
-            position: absolute; top: 50%; left: 50%;
-            width: 2px; height: 42px; background: rgba(43, 45, 46, 0.25);
-            transform: translateX(-50%); pointer-events: none; z-index: 2; border-radius: 1px;
-        }
-        .compass-degree { font-size: 12px; color: var(--text-soft); margin-top: 8px; letter-spacing: 0.5px; }
+  /* ─── SCREEN 2 ─── */
+  #screen2 {
+    background: var(--cream);
+    flex-direction: column;
+    align-items: stretch;
+  }
 
-        /* СЕТКА */
-        .grid-section {
-            position: relative; margin: 20px 0;
-            border-radius: 14px; border: 2px solid rgba(15, 79, 63, 0.2);
-            background: rgba(242, 235, 221, 0.5);
-            width: 100%; aspect-ratio: 1 / 1; max-height: 480px;
-            overflow: hidden; touch-action: none;
-        }
-        .grid-inner { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+  .s2-header {
+    background: var(--charcoal);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-shrink: 0;
+  }
 
-        /* Сетка — сверху, кликабельная */
-        .grid-vastu {
-            position: absolute; top: 10%; left: 10%; width: 80%; height: 80%;
-            display: grid; grid-template-columns: 1fr 1fr 1fr; grid-template-rows: 1fr 1fr 1fr;
-            pointer-events: none; z-index: 5; transition: transform 0.1s linear;
-        }
-        .grid-cell {
-            border: 2px solid rgba(0, 0, 0, 0.55);
-            pointer-events: auto; cursor: pointer;
-            position: relative; display: flex; align-items: flex-start; justify-content: flex-start;
-            padding: 4px; font-size: 10px; font-weight: 700;
-            color: rgba(0, 0, 0, 0.7); text-transform: uppercase;
-            letter-spacing: 0.3px; line-height: 1.2; background-color: transparent;
-        }
-        .grid-cell:active { background-color: rgba(15, 79, 63, 0.15); }
-        .grid-cell.marked {
-            background-color: rgba(180, 30, 50, 0.25) !important;
-            border: 3px solid rgba(180, 30, 50, 0.8) !important;
-            color: #8B0000;
-        }
-        .grid-cell .cell-label { pointer-events: none; font-size: 10px; font-weight: 700; text-transform: uppercase; opacity: 0.85; }
+  .s2-header-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    color: var(--cream);
+    font-weight: 600;
+  }
 
-        .grid-edge-label { position: absolute; font-size: 11px; font-weight: 700; pointer-events: none; z-index: 6; }
-        .grid-edge-label.n-label { top: 1%; left: 50%; transform: translateX(-50%); color: var(--bordo); }
-        .grid-edge-label.s-label { bottom: 1%; left: 50%; transform: translateX(-50%); color: var(--text-soft); }
-        .grid-edge-label.e-label { right: 2%; top: 50%; transform: translateY(-50%); color: var(--text-soft); }
-        .grid-edge-label.w-label { left: 2%; top: 50%; transform: translateY(-50%); color: var(--text-soft); }
+  .s2-nav {
+    display: flex;
+    gap: 8px;
+  }
 
-        /* План — снизу */
-        .plan-layer {
-            position: absolute; top: 10%; left: 10%; width: 80%; height: 80%;
-            pointer-events: none; z-index: 2; overflow: visible;
-        }
-        .plan-layer img {
-            position: absolute; touch-action: none; opacity: 0.5;
-            max-width: none; max-height: none; transform-origin: 0 0;
-        }
-        .plan-layer.active-drag { pointer-events: auto; }
-        .plan-layer.active-drag img { opacity: 0.75; cursor: move; }
+  .btn-sm {
+    padding: 9px 16px;
+    font-size: 12px;
+    border-radius: 10px;
+  }
 
-        .grid-hint { text-align: center; font-size: 11px; color: var(--text-soft); margin-top: 4px; font-style: italic; }
+  .s2-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
 
-        /* ТУЛТИП */
-        .tooltip-box {
-            background: var(--white); border: 1px solid rgba(15, 79, 63, 0.2);
-            border-radius: 12px; padding: 16px 18px;
-            box-shadow: 0 12px 36px rgba(43, 45, 46, 0.12);
-            font-size: 13px; line-height: 1.7; margin-top: 14px; display: none;
-        }
-        .tooltip-box.active { display: block; }
-        .tooltip-box .zone-title { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: var(--emerald); margin-bottom: 6px; }
-        .tooltip-box .good { color: var(--emerald); margin-top: 10px; }
-        .tooltip-box .bad { color: var(--bordo); margin-top: 6px; }
-        .tooltip-box .extra { color: var(--text-soft); margin-top: 6px; font-size: 12px; }
+  .compass-hint {
+    font-size: 11px;
+    color: rgba(43,45,46,0.45);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-align: center;
+  }
 
-        .actions-row { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 16px; }
+  /* Compass + Grid wrapper */
+  .compass-stage {
+    position: relative;
+    width: min(340px, 90vw);
+    height: min(340px, 90vw);
+    touch-action: none;
+    user-select: none;
+    flex-shrink: 0;
+  }
 
-        /* РЕЗУЛЬТАТ */
-        .result-card { background: rgba(242, 235, 221, 0.5); border-radius: 14px; padding: 14px 18px; margin-bottom: 8px; border-left: 3px solid var(--bordo); font-size: 13px; }
-        .result-card .r-title { font-weight: 600; }
-        .result-card .r-text { font-size: 12px; color: var(--text-soft); }
-        .summary-num { font-family: 'Playfair Display', serif; font-size: 48px; font-weight: 700; color: var(--bordo); text-align: center; margin: 16px 0 4px; }
-        .send-block { margin-top: 20px; padding-top: 18px; border-top: 1px solid rgba(15, 79, 63, 0.1); text-align: center; }
-        .send-block input { width: 100%; padding: 14px 16px; background: rgba(242, 235, 221, 0.6); border: 1px solid rgba(15, 79, 63, 0.15); border-radius: 10px; color: var(--text-main); font-family: 'Inter', sans-serif; font-size: 14px; margin-bottom: 10px; outline: none; }
-        .send-block input:focus { border-color: var(--gold-dark); }
-        .send-success { color: var(--emerald); font-size: 13px; margin-top: 8px; display: none; font-weight: 500; }
-        .footer-note { text-align: center; margin-top: 24px; font-size: 10px; color: rgba(43, 45, 46, 0.3); letter-spacing: 1px; }
+  /* Outer compass ring */
+  .compass-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid var(--dark-green);
+    background: radial-gradient(circle at 40% 35%, #fffdf9, #e8e0d0);
+    box-shadow: 0 8px 40px rgba(15,79,63,0.15), inset 0 1px 0 rgba(255,255,255,0.6);
+  }
 
-        @media (max-width: 600px) {
-            .container { padding: 16px 10px; }
-            h1 { font-size: 24px; }
-            .compass-wrap, .compass-outer { width: 110px; height: 110px; }
-            .compass-mark.north { font-size: 12px; }
-            .compass-mark.south, .compass-mark.east, .compass-mark.west { font-size: 9px; }
-            .compass-arrow-n, .compass-arrow-s { height: 34px; }
-            .grid-cell { font-size: 8px; padding: 2px; }
-            .grid-cell .cell-label { font-size: 8px; }
-        }
-    </style>
+  /* Cardinal labels */
+  .cardinal {
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--charcoal);
+    z-index: 10;
+    pointer-events: none;
+  }
+  .cardinal.N { top: 6px; left: 50%; transform: translateX(-50%); color: var(--dark-green); }
+  .cardinal.S { bottom: 6px; left: 50%; transform: translateX(-50%); }
+  .cardinal.E { right: 6px; top: 50%; transform: translateY(-50%); }
+  .cardinal.W { left: 6px; top: 50%; transform: translateY(-50%); }
+
+  /* Compass needle */
+  .needle-wrap {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 8;
+  }
+  .needle {
+    width: 4px;
+    height: 70%;
+    position: relative;
+    transform-origin: 50% 100%;
+  }
+  .needle::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 48% solid var(--dark-green);
+  }
+  .needle::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 48% solid var(--burgundy);
+  }
+  .needle-center {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    z-index: 9;
+  }
+  .needle-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--charcoal);
+    border: 2px solid var(--white);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+
+  /* Vastu grid */
+  .vastu-grid-wrap {
+    position: absolute;
+    inset: 14%;
+    z-index: 5;
+    transform-origin: center center;
+  }
+
+  .vastu-grid {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 2px;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  .zone-cell {
+    background: rgba(15,79,63,0.08);
+    border: 1px solid rgba(15,79,63,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+  .zone-cell:hover { background: rgba(15,79,63,0.18); }
+  .zone-cell.center-cell { background: rgba(212,162,76,0.12); border-color: rgba(212,162,76,0.3); }
+  .zone-cell.problematic {
+    background: rgba(107,30,42,0.25) !important;
+    border-color: rgba(107,30,42,0.5) !important;
+  }
+  .zone-cell.problematic::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(107,30,42,0.1);
+    animation: pulse-red 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse-red {
+    0%, 100% { opacity: 0.5; }
+    50% { opacity: 1; }
+  }
+
+  .zone-abbr {
+    font-family: 'Playfair Display', serif;
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--dark-green);
+    opacity: 0.7;
+    text-align: center;
+    line-height: 1.2;
+    pointer-events: none;
+    letter-spacing: 0.03em;
+  }
+  .zone-cell.problematic .zone-abbr { color: var(--burgundy); opacity: 0.9; }
+
+  /* Plan image layer */
+  .plan-wrap {
+    width: min(340px, 90vw);
+    height: min(260px, 70vw);
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: rgba(43,45,46,0.06);
+    border: 1.5px dashed rgba(43,45,46,0.2);
+    position: relative;
+    touch-action: none;
+    display: none;
+    flex-shrink: 0;
+  }
+  .plan-wrap.has-plan { display: block; }
+  #planCanvas {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+  }
+
+  /* Zone card */
+  .zone-card-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(43,45,46,0.55);
+    align-items: flex-end;
+    justify-content: center;
+    padding: 0 0 0 0;
+  }
+  .zone-card-overlay.open { display: flex; }
+
+  .zone-card {
+    background: var(--white);
+    border-radius: 20px 20px 0 0;
+    width: 100%;
+    max-width: 480px;
+    max-height: 85vh;
+    overflow-y: auto;
+    padding: 28px 24px 36px;
+    animation: slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes slide-up {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+
+  .zone-card-handle {
+    width: 36px;
+    height: 4px;
+    background: rgba(43,45,46,0.15);
+    border-radius: 2px;
+    margin: 0 auto 20px;
+  }
+
+  .zone-card-direction {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--dark-green);
+    margin-bottom: 4px;
+  }
+
+  .zone-card-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--charcoal);
+    margin-bottom: 4px;
+  }
+
+  .zone-card-resp {
+    font-size: 13px;
+    color: rgba(43,45,46,0.6);
+    margin-bottom: 20px;
+    line-height: 1.6;
+  }
+
+  .zone-badge-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+
+  .zone-badge {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+  .badge-element {
+    background: rgba(15,79,63,0.1);
+    color: var(--dark-green);
+  }
+  .badge-color {
+    border: 1.5px solid rgba(43,45,46,0.15);
+    color: var(--charcoal);
+  }
+
+  .zone-section-title {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(43,45,46,0.45);
+    margin-bottom: 8px;
+  }
+
+  .zone-list {
+    margin-bottom: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  .zone-list-item {
+    font-size: 13px;
+    color: var(--charcoal);
+    line-height: 1.5;
+    padding-left: 14px;
+    position: relative;
+  }
+  .zone-list-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--gold);
+  }
+  .zone-list-item.bad::before { background: var(--burgundy); }
+
+  .zone-card-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  /* ─── SCREEN 3 ─── */
+  #screen3 {
+    background: var(--charcoal);
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+  }
+
+  .s3-inner {
+    width: 100%;
+    max-width: 440px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+
+  .s3-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--cream);
+    text-align: center;
+    line-height: 1.2;
+  }
+
+  .result-counter {
+    width: 100%;
+    background: rgba(255,253,249,0.05);
+    border: 1.5px solid rgba(212,162,76,0.3);
+    border-radius: var(--radius);
+    padding: 24px;
+    text-align: center;
+  }
+
+  .result-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 56px;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .result-label {
+    font-size: 12px;
+    color: rgba(242,235,221,0.5);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .problem-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .problem-item {
+    background: rgba(107,30,42,0.2);
+    border: 1px solid rgba(107,30,42,0.4);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--cream);
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .problem-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--burgundy);
+    flex-shrink: 0;
+  }
+
+  .no-problems {
+    background: rgba(15,79,63,0.15);
+    border: 1px solid rgba(15,79,63,0.3);
+    border-radius: 10px;
+    padding: 16px;
+    font-size: 13px;
+    color: rgba(242,235,221,0.7);
+    text-align: center;
+    width: 100%;
+  }
+
+  .telegram-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .tg-input {
+    width: 100%;
+    background: rgba(255,253,249,0.07);
+    border: 1.5px solid rgba(242,235,221,0.15);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: var(--cream);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .tg-input::placeholder { color: rgba(242,235,221,0.3); }
+  .tg-input:focus { border-color: rgba(212,162,76,0.5); }
+
+  .success-block {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    text-align: center;
+  }
+  .success-block.show { display: flex; }
+
+  .success-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: rgba(15,79,63,0.2);
+    border: 2px solid var(--dark-green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .success-text {
+    font-size: 14px;
+    color: rgba(242,235,221,0.7);
+    line-height: 1.6;
+  }
+
+  .divider-line {
+    width: 100%;
+    height: 1px;
+    background: rgba(242,235,221,0.1);
+  }
+
+  .btn-back-s3 {
+    background: transparent;
+    border: none;
+    color: rgba(242,235,221,0.4);
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    padding: 4px;
+  }
+  .btn-back-s3:hover { color: rgba(242,235,221,0.7); }
+
+  /* Loader */
+  .loader {
+    display: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(43,45,46,0.2);
+    border-top-color: var(--charcoal);
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    margin: 0 auto;
+  }
+  .loader.show { display: block; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
 </head>
 <body>
 
-<div class="container">
+<!-- ═══════════════════ SCREEN 1 ═══════════════════ -->
+<section id="screen1" class="screen active">
+  <div class="s1-inner">
 
-    <!-- ЭКРАН 1: ЗАГРУЗКА -->
-    <div id="screenUpload" class="screen active">
-        <div class="subtitle">Блок 2 &bull; Васту-компас</div>
-        <h1>Где <span class="accent-text">твоя</span> точка опоры</h1>
-        <p class="description">
-            Пространство либо работает на тебя, либо высасывает силы.
-            Загрузи план квартиры и наложи его на сетку Васту — или работай без плана.
-        </p>
+    <svg class="brand-mark" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="32" cy="32" r="30" stroke="#D4A24C" stroke-width="1.5"/>
+      <circle cx="32" cy="32" r="20" stroke="#D4A24C" stroke-width="0.75" stroke-dasharray="3 3"/>
+      <line x1="32" y1="4" x2="32" y2="60" stroke="#D4A24C" stroke-width="0.75" opacity="0.4"/>
+      <line x1="4" y1="32" x2="60" y2="32" stroke="#D4A24C" stroke-width="0.75" opacity="0.4"/>
+      <polygon points="32,8 35,28 32,26 29,28" fill="#0F4F3F"/>
+      <polygon points="32,56 35,36 32,38 29,36" fill="#6B1E2A"/>
+      <circle cx="32" cy="32" r="4" fill="#D4A24C"/>
+    </svg>
 
-        <div class="upload-zone" id="uploadZone">
-            <div class="upload-placeholder">
-                <div style="font-size:44px;margin-bottom:10px;opacity:0.6;">&#128208;</div>
-                <div style="font-size:14px;color:rgba(43,45,46,0.65);">Загрузи план квартиры</div>
-                <div style="font-size:11px;color:rgba(43,45,46,0.3);">Скрин, фото схемы, рисунок &bull; JPG, PNG</div>
-            </div>
-            <input type="file" id="fileInput" accept="image/*">
-            <img class="upload-preview" id="uploadPreview" alt="План">
-        </div>
+    <div>
+      <h1 class="s1-title">Васту-<em>компас</em></h1>
+    </div>
+    <p class="s1-sub">Определите энергетические зоны вашего пространства по древней системе Васту Шастра</p>
 
-        <div class="actions-row">
-            <button type="button" class="btn btn-outline" id="btnSkip">БЕЗ ПЛАНА</button>
-            <button type="button" class="btn btn-primary" id="btnToCompass" disabled>ДАЛЕЕ С ПЛАНОМ</button>
-        </div>
+    <div class="drop-zone" id="dropZone">
+      <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+        <rect x="4" y="6" width="24" height="20" rx="2" stroke="#D4A24C" stroke-width="1.5"/>
+        <path d="M4 22l7-7 5 5 4-4 8 6" stroke="#D4A24C" stroke-width="1.5" stroke-linejoin="round"/>
+        <circle cx="11" cy="13" r="2" fill="#D4A24C" opacity="0.6"/>
+      </svg>
+      <span class="drop-zone-label">Загрузить план</span>
+      <span class="drop-zone-text">JPG, PNG — план вашей квартиры или дома</span>
+      <input type="file" id="fileInput" accept="image/*">
     </div>
 
-    <!-- ЭКРАН 2: КОМПАС + СЕТКА -->
-    <div id="screenCompass" class="screen">
-        <div class="subtitle">Блок 2 &bull; Васту-компас</div>
-        <h1>Поверни <span class="accent-text">север</span> и сверь зоны</h1>
-        <p class="description">
-            Вращай компас пальцем. Сетка поворачивается вместе с ним.
-            Нажимай на зоны — увидишь, что должно быть, а чего быть не должно.
-        </p>
-
-        <div class="compass-section">
-            <div class="compass-label">Вращай компас пальцем</div>
-            <div class="compass-wrap">
-                <div class="compass-outer" id="compassOuter">
-                    <div class="compass-arrow-n"></div>
-                    <div class="compass-arrow-s"></div>
-                    <div class="compass-mark north">N</div>
-                    <div class="compass-mark south">S</div>
-                    <div class="compass-mark east">E</div>
-                    <div class="compass-mark west">W</div>
-                    <div class="compass-center-dot"></div>
-                </div>
-            </div>
-            <div class="compass-degree" id="compassDeg">Север: 0 град</div>
-        </div>
-
-        <div class="grid-section" id="gridSection">
-            <div class="grid-inner" id="gridInner">
-                <div class="plan-layer" id="planLayer">
-                    <img id="planImage" alt="План" style="display:none;">
-                </div>
-                <div class="grid-vastu" id="gridVastu">
-                    <div class="grid-cell" data-zone="northwest"><span class="cell-label">С-З</span></div>
-                    <div class="grid-cell" data-zone="north"><span class="cell-label">Север</span></div>
-                    <div class="grid-cell" data-zone="northeast"><span class="cell-label">С-В</span></div>
-                    <div class="grid-cell" data-zone="west"><span class="cell-label">Запад</span></div>
-                    <div class="grid-cell" data-zone="center"><span class="cell-label">Центр</span></div>
-                    <div class="grid-cell" data-zone="east"><span class="cell-label">Восток</span></div>
-                    <div class="grid-cell" data-zone="southwest"><span class="cell-label">Ю-З</span></div>
-                    <div class="grid-cell" data-zone="south"><span class="cell-label">Юг</span></div>
-                    <div class="grid-cell" data-zone="southeast"><span class="cell-label">Ю-В</span></div>
-                </div>
-                <div class="grid-edge-label n-label">N</div>
-                <div class="grid-edge-label s-label">S</div>
-                <div class="grid-edge-label e-label">E</div>
-                <div class="grid-edge-label w-label">W</div>
-            </div>
-        </div>
-        <div class="grid-hint" id="gridHintPlan" style="display:none;">Двигай план одним пальцем. Двумя — масштабируй.</div>
-        <div class="grid-hint" id="gridHintNoPlan">Нажимай на зоны, чтобы узнать, что должно быть в каждой.</div>
-
-        <div class="tooltip-box" id="tooltipBox">
-            <div class="zone-title" id="tipTitle"></div>
-            <div class="good" id="tipGood"></div>
-            <div class="bad" id="tipBad"></div>
-            <div class="extra" id="tipExtra"></div>
-            <button type="button" class="btn btn-outline" id="btnMark" style="margin-top:12px;padding:10px 20px;font-size:12px;">ОТМЕТИТЬ КАК ПРОБЛЕМНУЮ</button>
-        </div>
-
-        <div class="actions-row">
-            <button type="button" class="btn btn-outline" id="btnBackUpload">НАЗАД</button>
-            <button type="button" class="btn btn-primary" id="btnToResult">РЕЗУЛЬТАТ</button>
-        </div>
+    <div class="file-preview" id="filePreview">
+      <img id="previewImg" src="" alt="план">
+      <div class="file-preview-label" id="previewLabel">план загружен</div>
     </div>
 
-    <!-- ЭКРАН 3: РЕЗУЛЬТАТ -->
-    <div id="screenResult" class="screen">
-        <div class="subtitle">Блок 2 &bull; Результат</div>
-        <h1>Твой <span class="accent-text">Васту-разбор</span></h1>
-        <p class="description">Ты проверил пространство через Васту-компас. Вот проблемные зоны.</p>
-
-        <div class="summary-num" id="summaryNum">0</div>
-        <div style="text-align:center;color:var(--text-soft);font-size:14px;margin-bottom:18px;">проблемных зон из 9</div>
-
-        <div id="resultList"></div>
-
-        <div class="send-block">
-            <p style="font-size:13px;color:var(--text-soft);margin-bottom:10px;">Хочешь полную диагностику и корректировку? Оставь ник.</p>
-            <input type="text" id="sendNick" placeholder="твой_ник_в_телеграм">
-            <button type="button" class="btn btn-primary" id="btnSend">ОТПРАВИТЬ НА ДИАГНОСТИКУ</button>
-            <div class="send-success" id="sendOk">Отправлено! Я напишу тебе.</div>
-        </div>
-
-        <div class="actions-row">
-            <button type="button" class="btn btn-outline" id="btnBackCompass">НАЗАД К СЕТКЕ</button>
-            <button type="button" class="btn btn-outline" id="btnRestart">ЗАНОВО</button>
-        </div>
+    <div class="btn-row">
+      <button class="btn btn-ghost" id="btnNoPlan">Без плана</button>
+      <button class="btn btn-primary" id="btnWithPlan">Далее с планом</button>
     </div>
 
-    <div class="footer-note">Метод «Точка сборки» &bull; Виктория Кокурина</div>
+  </div>
+</section>
+
+<!-- ═══════════════════ SCREEN 2 ═══════════════════ -->
+<section id="screen2" class="screen">
+
+  <div class="s2-header">
+    <span class="s2-header-title">Васту-компас</span>
+    <div class="s2-nav">
+      <button class="btn btn-ghost btn-sm" id="btnBack1">← Назад</button>
+      <button class="btn btn-gold btn-sm" id="btnResult">Результат</button>
+    </div>
+  </div>
+
+  <div class="s2-body">
+    <p class="compass-hint">Вращайте компас пальцем</p>
+
+    <div class="compass-stage" id="compassStage">
+      <div class="compass-ring"></div>
+      <span class="cardinal N">N</span>
+      <span class="cardinal S">S</span>
+      <span class="cardinal E">E</span>
+      <span class="cardinal W">W</span>
+
+      <div class="vastu-grid-wrap" id="gridWrap">
+        <div class="vastu-grid" id="vastuGrid">
+          <!-- cells injected by JS -->
+        </div>
+      </div>
+
+      <div class="needle-wrap">
+        <div class="needle" id="needle"></div>
+      </div>
+      <div class="needle-center">
+        <div class="needle-dot"></div>
+      </div>
+    </div>
+
+    <div class="plan-wrap" id="planWrap">
+      <canvas id="planCanvas"></canvas>
+    </div>
+
+    <p class="compass-hint" id="markHint" style="display:none;">Нажмите на зону чтобы узнать о ней подробнее</p>
+
+  </div>
+</section>
+
+<!-- ═══════════════════ SCREEN 3 ═══════════════════ -->
+<section id="screen3" class="screen">
+  <div class="s3-inner">
+
+    <button class="btn-back-s3" id="btnBack2">← вернуться</button>
+
+    <h2 class="s3-title">Диагностика<br>пространства</h2>
+
+    <div class="result-counter">
+      <div class="result-number" id="problemCount">0</div>
+      <div class="result-label">проблемных зон</div>
+    </div>
+
+    <div class="problem-list" id="problemList"></div>
+
+    <div class="divider-line"></div>
+
+    <div class="telegram-form" id="tgForm">
+      <input class="tg-input" type="text" id="tgNick" placeholder="Ваш ник в Telegram (@username)">
+      <button class="btn btn-gold" id="btnSend">Отправить на диагностику</button>
+      <div class="loader" id="loader"></div>
+    </div>
+
+    <div class="success-block" id="successBlock">
+      <div class="success-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M5 12l5 5L19 7" stroke="#0F4F3F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <p class="success-text">Заявка отправлена. Виктория свяжется с вами для подробной консультации.</p>
+      <a href="https://t.me/kowiktori" target="_blank" class="btn btn-primary" style="text-decoration:none; text-align:center; display:block; width:100%;">Написать Виктории →</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════ ZONE CARD ═══════════════════ -->
+<div class="zone-card-overlay" id="zoneCardOverlay">
+  <div class="zone-card">
+    <div class="zone-card-handle"></div>
+    <div class="zone-card-direction" id="cardDirection"></div>
+    <div class="zone-card-name" id="cardName"></div>
+    <div class="zone-card-resp" id="cardResp"></div>
+    <div class="zone-badge-row" id="cardBadges"></div>
+    <div class="zone-section-title">Рекомендуется размещать</div>
+    <div class="zone-list" id="cardShould"></div>
+    <div class="zone-section-title">Следует избегать</div>
+    <div class="zone-list" id="cardShouldNot"></div>
+    <div class="zone-card-actions">
+      <button class="btn btn-ghost" style="border-color:rgba(43,45,46,0.2); color:var(--charcoal);" id="cardClose">Закрыть</button>
+      <button class="btn btn-danger" id="cardMark">Отметить как проблемную</button>
+    </div>
+  </div>
 </div>
 
 <script>
-(function() {
+// ═══════════════════════════════════════
+// VASTU ZONE DATA
+// ═══════════════════════════════════════
+const ZONES = [
+  {
+    id: 'NW', direction: 'Северо-запад', name: 'Ваю / Вайю',
+    responsible: 'Движение, изменения, помощники, гости, отношения с окружающим миром',
+    element: 'Воздух', colors: ['Белый', 'Серебряный', 'Светло-серый'],
+    should: ['Гостевая комната', 'Кладовая', 'Столовая', 'Туалет'],
+    shouldNot: ['Спальня хозяина', 'Тяжёлые хранилища', 'Огонь и кухня']
+  },
+  {
+    id: 'N', direction: 'Север', name: 'Кубера',
+    responsible: 'Богатство, изобилие, карьера, финансовые потоки',
+    element: 'Вода', colors: ['Зелёный', 'Голубой', 'Синий'],
+    should: ['Касса, сейф', 'Кабинет', 'Водные объекты', 'Открытое пространство'],
+    shouldNot: ['Тяжёлые конструкции', 'Туалет', 'Кухня', 'Лестница']
+  },
+  {
+    id: 'NE', direction: 'Северо-восток', name: 'Ишан',
+    responsible: 'Духовность, здоровье, ясность ума, интуиция, знания',
+    element: 'Вода / Земля', colors: ['Белый', 'Светло-жёлтый', 'Кремовый'],
+    should: ['Молельная комната, алтарь', 'Медитация', 'Учебная зона', 'Небольшой водоём'],
+    shouldNot: ['Кухня', 'Туалет', 'Спальня', 'Мусор', 'Обувь']
+  },
+  {
+    id: 'W', direction: 'Запад', name: 'Варуна',
+    responsible: 'Прибыль, стабильность, признание, дети, творчество',
+    element: 'Вода', colors: ['Синий', 'Белый', 'Серый'],
+    should: ['Детская комната', 'Столовая', 'Учебное место', 'Спальня гостей'],
+    shouldNot: ['Главный вход', 'Открытый огонь', 'Крупные деревья рядом']
+  },
+  {
+    id: 'C', direction: 'Центр', name: 'Брахмастхан',
+    responsible: 'Сердце дома, жизненная энергия, связь всех зон',
+    element: 'Эфир / Акаша', colors: ['Золотой', 'Жёлтый', 'Белый'],
+    should: ['Открытое пространство', 'Лёгкий декор', 'Хорошая вентиляция'],
+    shouldNot: ['Колонны', 'Туалет', 'Кухня', 'Тяжёлая мебель', 'Лестница']
+  },
+  {
+    id: 'E', direction: 'Восток', name: 'Индра',
+    responsible: 'Здоровье, рост, процветание, социальные связи, слава',
+    element: 'Дерево', colors: ['Зелёный', 'Светло-зелёный', 'Деревянные тона'],
+    should: ['Главный вход', 'Гостиная', 'Веранда', 'Окна и свет'],
+    shouldNot: ['Туалет', 'Спальня', 'Кухня с юга']
+  },
+  {
+    id: 'SW', direction: 'Юго-запад', name: 'Найрути',
+    responsible: 'Стабильность, отношения, здоровье главы семьи, сила и защита',
+    element: 'Земля', colors: ['Коричневый', 'Бежевый', 'Персиковый'],
+    should: ['Спальня хозяина', 'Тяжёлые предметы', 'Сейф', 'Шкафы'],
+    shouldNot: ['Главный вход', 'Открытый огонь', 'Водоём', 'Туалет', 'Детская']
+  },
+  {
+    id: 'S', direction: 'Юг', name: 'Яма',
+    responsible: 'Репутация, карьера, слава, дисциплина и сила характера',
+    element: 'Огонь', colors: ['Красный', 'Оранжевый', 'Розовый'],
+    should: ['Спальня', 'Тяжёлые стены', 'Закрытое хранилище'],
+    shouldNot: ['Главный вход', 'Водоём', 'Окна большие', 'Кухня']
+  },
+  {
+    id: 'SE', direction: 'Юго-восток', name: 'Агни',
+    responsible: 'Огонь, энергия, пищеварение, финансовая активность, здоровье',
+    element: 'Огонь', colors: ['Оранжевый', 'Красный', 'Розовый'],
+    should: ['Кухня', 'Электрические приборы', 'Серверная', 'Бойлерная'],
+    shouldNot: ['Спальня', 'Водоём', 'Туалет', 'Детская']
+  }
+];
 
-    var zoneData = {
-        'north': {
-            name: 'Север',
-            title: 'Север — зона финансов и богатства',
-            good: 'Должно быть: вода (фонтан, аквариум, картина с водой), зеркало, монеты, зелень, сейф.',
-            bad: 'Не должно быть: туалет, мусорное ведро, кладовка, спальня, грязная обувь.',
-            extra: 'Цвета: зелёный, голубой. Стихия: вода.'
-        },
-        'northeast': {
-            name: 'Северо-восток',
-            title: 'Северо-восток — зона мудрости, интуиции и ясности',
-            good: 'Должно быть: алтарь, книги, чистота, растения, свет, вода, место для медитации.',
-            bad: 'Не должно быть: туалет, спальня, кухня, тяжёлая мебель, мусор, грязные вещи.',
-            extra: 'Цвета: белый, светло-жёлтый. Стихия: вода + эфир.'
-        },
-        'east': {
-            name: 'Восток',
-            title: 'Восток — зона здоровья, долголетия и социального статуса',
-            good: 'Должно быть: окна, свет, открытое пространство, живые растения, минимум мебели.',
-            bad: 'Не должно быть: туалет, кладовка, спальня, входная дверь, тяжёлые шкафы.',
-            extra: 'Цвета: белый, светло-зелёный. Стихия: воздух.'
-        },
-        'southeast': {
-            name: 'Юго-восток',
-            title: 'Юго-восток — зона энергии, денежного потока и страсти',
-            good: 'Должно быть: кухня, плита, свечи, красный декор, активность, движение.',
-            bad: 'Не должно быть: туалет, спальня, ванная, зеркало напротив плиты.',
-            extra: 'Цвета: красный, оранжевый, розовый. Стихия: огонь.'
-        },
-        'south': {
-            name: 'Юг',
-            title: 'Юг — зона славы, признания и уверенности в себе',
-            good: 'Должно быть: гостиная, награды, дипломы, красный/оранжевый декор, хорошее освещение.',
-            bad: 'Не должно быть: туалет, ванная, кладовка, тёмные помещения, спальня.',
-            extra: 'Цвета: красный, оранжевый, золотой. Стихия: огонь.'
-        },
-        'southwest': {
-            name: 'Юго-запад',
-            title: 'Юго-запад — зона стабильности, защиты и брака',
-            good: 'Должно быть: спальня хозяев, тяжёлая мебель, закрытые шкафы, земляные тона, минимум окон.',
-            bad: 'Не должно быть: туалет, входная дверь, кухня, детская комната.',
-            extra: 'Цвета: коричневый, бежевый, терракотовый. Стихия: земля.'
-        },
-        'west': {
-            name: 'Запад',
-            title: 'Запад — зона обучения, творчества и детей',
-            good: 'Должно быть: детская комната, кабинет, мастерская, книги, инструменты, картины.',
-            bad: 'Не должно быть: туалет, спальня хозяев, ванная, кладовка.',
-            extra: 'Цвета: серый, серебристый, белый. Стихия: воздух.'
-        },
-        'northwest': {
-            name: 'Северо-запад',
-            title: 'Северо-запад — зона поддержки, связей, путешествий и друзей',
-            good: 'Должно быть: гостевая комната, коридор, прихожая, место для встреч, ветряные колокольчики.',
-            bad: 'Не должно быть: туалет, кухня, спальня хозяев, кладовка.',
-            extra: 'Цвета: серый, серебристый, бежевый. Стихия: воздух.'
-        },
-        'center': {
-            name: 'Центр',
-            title: 'Центр — зона баланса и здоровья всей семьи',
-            good: 'Должно быть: свободное пространство, свет, воздух, ничего лишнего. Максимум — журнальный столик.',
-            bad: 'Не должно быть: туалет, лестница, колонны, несущие стены, тяжёлая мебель, кладовка.',
-            extra: 'Цвета: жёлтый, золотой, песочный. Стихия: эфир.'
-        }
+// Grid order (row by row, top=N)
+// NW  N  NE
+//  W  C   E
+// SW  S  SE
+const GRID_ORDER = ['NW','N','NE','W','C','E','SW','S','SE'];
+
+// ═══════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════
+let compassAngle = 0;
+let problematic = new Set();
+let activeZoneId = null;
+let planImage = null;
+let planX = 0, planY = 0, planScale = 1;
+
+// ═══════════════════════════════════════
+// SCREENS
+// ═══════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+// ═══════════════════════════════════════
+// BUILD GRID
+// ═══════════════════════════════════════
+function buildGrid() {
+  const grid = document.getElementById('vastuGrid');
+  grid.innerHTML = '';
+  GRID_ORDER.forEach(id => {
+    const zone = ZONES.find(z => z.id === id);
+    const cell = document.createElement('div');
+    cell.className = 'zone-cell' + (id === 'C' ? ' center-cell' : '');
+    cell.dataset.zoneId = id;
+    const abbr = document.createElement('div');
+    abbr.className = 'zone-abbr';
+    abbr.textContent = zone.direction.split(' ').map(w => w[0]).join('').slice(0,2);
+    cell.appendChild(abbr);
+    cell.addEventListener('click', e => { e.stopPropagation(); openZoneCard(id); });
+    grid.appendChild(cell);
+  });
+}
+
+function updateGridCells() {
+  document.querySelectorAll('.zone-cell').forEach(cell => {
+    const id = cell.dataset.zoneId;
+    if (problematic.has(id)) cell.classList.add('problematic');
+    else cell.classList.remove('problematic');
+  });
+}
+
+// ═══════════════════════════════════════
+// ZONE CARD
+// ═══════════════════════════════════════
+function openZoneCard(zoneId) {
+  activeZoneId = zoneId;
+  const zone = ZONES.find(z => z.id === zoneId);
+  document.getElementById('cardDirection').textContent = zone.direction;
+  document.getElementById('cardName').textContent = zone.name;
+  document.getElementById('cardResp').textContent = zone.responsible;
+
+  const badges = document.getElementById('cardBadges');
+  badges.innerHTML = `<span class="zone-badge badge-element">${zone.element}</span>`
+    + zone.colors.map(c => `<span class="zone-badge badge-color">${c}</span>`).join('');
+
+  const should = document.getElementById('cardShould');
+  should.innerHTML = zone.should.map(i => `<div class="zone-list-item">${i}</div>`).join('');
+
+  const shouldNot = document.getElementById('cardShouldNot');
+  shouldNot.innerHTML = zone.shouldNot.map(i => `<div class="zone-list-item bad">${i}</div>`).join('');
+
+  const markBtn = document.getElementById('cardMark');
+  if (problematic.has(zoneId)) {
+    markBtn.textContent = 'Снять отметку';
+    markBtn.className = 'btn btn-ghost';
+    markBtn.style.borderColor = 'rgba(43,45,46,0.2)';
+    markBtn.style.color = 'var(--charcoal)';
+  } else {
+    markBtn.textContent = 'Отметить как проблемную';
+    markBtn.className = 'btn btn-danger';
+    markBtn.style = '';
+  }
+
+  document.getElementById('zoneCardOverlay').classList.add('open');
+  document.getElementById('markHint').style.display = 'block';
+}
+
+function closeZoneCard() {
+  document.getElementById('zoneCardOverlay').classList.remove('open');
+}
+
+document.getElementById('cardClose').addEventListener('click', closeZoneCard);
+document.getElementById('zoneCardOverlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('zoneCardOverlay')) closeZoneCard();
+});
+
+document.getElementById('cardMark').addEventListener('click', () => {
+  if (!activeZoneId) return;
+  if (problematic.has(activeZoneId)) problematic.delete(activeZoneId);
+  else problematic.add(activeZoneId);
+  updateGridCells();
+  openZoneCard(activeZoneId); // refresh card
+});
+
+// ═══════════════════════════════════════
+// COMPASS ROTATION
+// ═══════════════════════════════════════
+const stage = document.getElementById('compassStage');
+let isDragging = false;
+let startAngle = 0;
+let startCompassAngle = 0;
+
+function getAngle(cx, cy, x, y) {
+  return Math.atan2(y - cy, x - cx) * 180 / Math.PI;
+}
+
+function applyRotation(angle) {
+  compassAngle = angle;
+  document.getElementById('gridWrap').style.transform = `rotate(${angle}deg)`;
+  document.getElementById('needle').style.transform = `rotate(${-angle}deg)`;
+}
+
+function stageCenter() {
+  const r = stage.getBoundingClientRect();
+  return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+}
+
+stage.addEventListener('pointerdown', e => {
+  if (e.target.closest('.zone-cell')) return;
+  isDragging = true;
+  stage.setPointerCapture(e.pointerId);
+  const c = stageCenter();
+  startAngle = getAngle(c.x, c.y, e.clientX, e.clientY);
+  startCompassAngle = compassAngle;
+  e.preventDefault();
+});
+
+stage.addEventListener('pointermove', e => {
+  if (!isDragging) return;
+  const c = stageCenter();
+  const current = getAngle(c.x, c.y, e.clientX, e.clientY);
+  const delta = current - startAngle;
+  applyRotation(startCompassAngle + delta);
+});
+
+stage.addEventListener('pointerup', () => { isDragging = false; });
+stage.addEventListener('pointercancel', () => { isDragging = false; });
+
+// ═══════════════════════════════════════
+// PLAN IMAGE — drag & pinch
+// ═══════════════════════════════════════
+const planWrap = document.getElementById('planWrap');
+const planCanvas = document.getElementById('planCanvas');
+const ctx = planCanvas.getContext('2d');
+let planPointers = {};
+let lastPinchDist = null;
+
+function drawPlan() {
+  if (!planImage) return;
+  const w = planCanvas.width, h = planCanvas.height;
+  ctx.clearRect(0, 0, w, h);
+  ctx.save();
+  ctx.translate(planX + w/2, planY + h/2);
+  ctx.scale(planScale, planScale);
+  ctx.drawImage(planImage, -planImage.width/2, -planImage.height/2);
+  ctx.restore();
+}
+
+function resizePlanCanvas() {
+  const r = planWrap.getBoundingClientRect();
+  planCanvas.width = r.width;
+  planCanvas.height = r.height;
+  drawPlan();
+}
+
+function pinchDist(ps) {
+  const arr = Object.values(ps);
+  if (arr.length < 2) return null;
+  const dx = arr[0].x - arr[1].x;
+  const dy = arr[0].y - arr[1].y;
+  return Math.sqrt(dx*dx + dy*dy);
+}
+
+planWrap.addEventListener('pointerdown', e => {
+  planPointers[e.pointerId] = { x: e.clientX, y: e.clientY };
+  planWrap.setPointerCapture(e.pointerId);
+  if (Object.keys(planPointers).length === 2) {
+    lastPinchDist = pinchDist(planPointers);
+  }
+  e.preventDefault();
+});
+
+planWrap.addEventListener('pointermove', e => {
+  const prev = planPointers[e.pointerId];
+  if (!prev) return;
+  const curr = { x: e.clientX, y: e.clientY };
+  const keys = Object.keys(planPointers);
+
+  if (keys.length === 1) {
+    // drag
+    planX += curr.x - prev.x;
+    planY += curr.y - prev.y;
+  } else if (keys.length === 2) {
+    // pinch
+    planPointers[e.pointerId] = curr;
+    const dist = pinchDist(planPointers);
+    if (lastPinchDist) {
+      const ratio = dist / lastPinchDist;
+      planScale = Math.max(0.3, Math.min(5, planScale * ratio));
+    }
+    lastPinchDist = dist;
+  }
+
+  planPointers[e.pointerId] = curr;
+  drawPlan();
+  e.preventDefault();
+});
+
+planWrap.addEventListener('pointerup', e => {
+  delete planPointers[e.pointerId];
+  lastPinchDist = null;
+});
+planWrap.addEventListener('pointercancel', e => {
+  delete planPointers[e.pointerId];
+  lastPinchDist = null;
+});
+
+// ═══════════════════════════════════════
+// FILE UPLOAD
+// ═══════════════════════════════════════
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+const filePreview = document.getElementById('filePreview');
+const previewImg = document.getElementById('previewImg');
+
+dropZone.addEventListener('click', () => fileInput.click());
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file) loadFile(file);
+});
+fileInput.addEventListener('change', () => {
+  if (fileInput.files[0]) loadFile(fileInput.files[0]);
+});
+
+function loadFile(file) {
+  const reader = new FileReader();
+  reader.onload = ev => {
+    previewImg.src = ev.target.result;
+    filePreview.style.display = 'block';
+    document.getElementById('previewLabel').textContent = file.name;
+    // load for canvas
+    planImage = new Image();
+    planImage.onload = () => {
+      resizePlanCanvas();
     };
+    planImage.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
 
-    var zoneKeys = ['north', 'northeast', 'east', 'southeast', 'south', 'southwest', 'west', 'northwest', 'center'];
-    var marked = {};
-    zoneKeys.forEach(function(k) { marked[k] = false; });
+// ═══════════════════════════════════════
+// NAV BUTTONS
+// ═══════════════════════════════════════
+document.getElementById('btnNoPlan').addEventListener('click', () => {
+  planImage = null;
+  planWrap.classList.remove('has-plan');
+  showScreen('screen2');
+});
 
-    var compassAngle = 0;
-    var hasPlan = false;
-    var currentZone = null;
-    var planX = 0, planY = 0, planScale = 1;
+document.getElementById('btnWithPlan').addEventListener('click', () => {
+  showScreen('screen2');
+  if (planImage) {
+    planWrap.classList.add('has-plan');
+    setTimeout(() => { resizePlanCanvas(); }, 100);
+  }
+});
 
-    function $(id) { return document.getElementById(id); }
+document.getElementById('btnBack1').addEventListener('click', () => showScreen('screen1'));
 
-    function show(id) {
-        $('screenUpload').classList.remove('active');
-        $('screenCompass').classList.remove('active');
-        $('screenResult').classList.remove('active');
-        $(id).classList.add('active');
+document.getElementById('btnResult').addEventListener('click', () => {
+  buildResultScreen();
+  showScreen('screen3');
+});
+
+document.getElementById('btnBack2').addEventListener('click', () => showScreen('screen2'));
+
+// ═══════════════════════════════════════
+// RESULT SCREEN
+// ═══════════════════════════════════════
+function buildResultScreen() {
+  document.getElementById('problemCount').textContent = problematic.size;
+  const list = document.getElementById('problemList');
+  list.innerHTML = '';
+
+  if (problematic.size === 0) {
+    list.innerHTML = '<div class="no-problems">Проблемных зон не отмечено. Ваше пространство выглядит гармонично!</div>';
+  } else {
+    problematic.forEach(id => {
+      const zone = ZONES.find(z => z.id === id);
+      const item = document.createElement('div');
+      item.className = 'problem-item';
+      item.innerHTML = `<div class="problem-dot"></div><div><strong>${zone.direction}</strong> — ${zone.name}</div>`;
+      list.appendChild(item);
+    });
+  }
+
+  // reset form
+  document.getElementById('tgNick').value = '';
+  document.getElementById('tgForm').style.display = 'flex';
+  document.getElementById('successBlock').classList.remove('show');
+  document.getElementById('loader').classList.remove('show');
+}
+
+// ═══════════════════════════════════════
+// FORMSPREE SEND
+// ═══════════════════════════════════════
+document.getElementById('btnSend').addEventListener('click', async () => {
+  const nick = document.getElementById('tgNick').value.trim();
+  if (!nick) {
+    document.getElementById('tgNick').focus();
+    document.getElementById('tgNick').style.borderColor = 'rgba(107,30,42,0.6)';
+    return;
+  }
+
+  const zones = ZONES.filter(z => problematic.has(z.id)).map(z => `${z.direction} (${z.name})`).join(', ') || 'нет';
+  const count = problematic.size;
+
+  document.getElementById('btnSend').disabled = true;
+  document.getElementById('loader').classList.add('show');
+
+  try {
+    const resp = await fetch('https://formspree.io/f/xwvygpnq', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        'Тест': 'Васту-компас',
+        'Проблемные зоны': zones,
+        'Количество': count,
+        'Ник': nick,
+        'Метка': 'ЛИД С ВАСТУ-КОМПАСА'
+      })
+    });
+
+    document.getElementById('loader').classList.remove('show');
+
+    if (resp.ok) {
+      document.getElementById('tgForm').style.display = 'none';
+      document.getElementById('successBlock').classList.add('show');
+    } else {
+      throw new Error('error');
     }
+  } catch {
+    document.getElementById('loader').classList.remove('show');
+    document.getElementById('btnSend').disabled = false;
+    alert('Ошибка отправки. Попробуйте ещё раз.');
+  }
+});
 
-    // ЭКРАН 1
-    var uploadZone = $('uploadZone');
-    var fileInput = $('fileInput');
-    var uploadPreview = $('uploadPreview');
-    var btnToCompass = $('btnToCompass');
+document.getElementById('tgNick').addEventListener('input', () => {
+  document.getElementById('tgNick').style.borderColor = '';
+});
 
-    uploadZone.addEventListener('click', function() { fileInput.click(); });
-    fileInput.addEventListener('change', function() {
-        var file = fileInput.files[0];
-        if (!file) return;
-        var reader = new FileReader();
-        reader.onload = function(e) {
-            uploadPreview.src = e.target.result;
-            uploadZone.classList.add('has-image');
-            btnToCompass.disabled = false;
-        };
-        reader.readAsDataURL(file);
-    });
-
-    btnToCompass.addEventListener('click', function() {
-        hasPlan = true;
-        $('planImage').src = uploadPreview.src;
-        planX = 0; planY = 0; planScale = 1;
-        applyPlan();
-        goToCompass();
-    });
-    $('btnSkip').addEventListener('click', function() {
-        hasPlan = false;
-        goToCompass();
-    });
-
-    function goToCompass() {
-        updatePlanVisibility();
-        updateGridRotation();
-        refreshCells();
-        $('tooltipBox').classList.remove('active');
-        updateCompassVisual();
-        show('screenCompass');
-    }
-
-    function updatePlanVisibility() {
-        if (hasPlan) {
-            $('planImage').style.display = 'block';
-            $('gridHintPlan').style.display = 'block';
-            $('gridHintNoPlan').style.display = 'none';
-        } else {
-            $('planImage').style.display = 'none';
-            $('gridHintPlan').style.display = 'none';
-            $('gridHintNoPlan').style.display = 'block';
-        }
-    }
-
-    function applyPlan() {
-        $('planImage').style.transform = 'translate(' + planX + 'px, ' + planY + 'px) scale(' + planScale + ')';
-    }
-
-    // КОМПАС
-    var compassOuter = $('compassOuter');
-    var compassDragging = false;
-    var compassStartAngle = 0;
-    var compassStartTouch = 0;
-
-    function getAngle(x, y, rect) {
-        var cx = rect.left + rect.width / 2;
-        var cy = rect.top + rect.height / 2;
-        return Math.atan2(y - cy, x - cx) * 180 / Math.PI;
-    }
-
-    compassOuter.addEventListener('pointerdown', function(e) {
-        compassDragging = true;
-        compassOuter.setPointerCapture(e.pointerId);
-        var rect = compassOuter.getBoundingClientRect();
-        compassStartAngle = compassAngle;
-        compassStartTouch = getAngle(e.clientX, e.clientY, rect);
-    });
-
-    window.addEventListener('pointermove', function(e) {
-        if (!compassDragging) return;
-        var rect = compassOuter.getBoundingClientRect();
-        var currentTouch = getAngle(e.clientX, e.clientY, rect);
-        var delta = currentTouch - compassStartTouch;
-        if (delta > 180) delta -= 360;
-        if (delta < -180) delta += 360;
-        compassAngle = (compassStartAngle + delta + 360) % 360;
-        updateCompassVisual();
-        updateGridRotation();
-    });
-
-    window.addEventListener('pointerup', function(e) {
-        if (!compassDragging) return;
-        compassDragging = false;
-        compassOuter.releasePointerCapture(e.pointerId);
-    });
-
-    function updateCompassVisual() {
-        compassOuter.style.transform = 'rotate(' + compassAngle + 'deg)';
-        $('compassDeg').textContent = 'Север: ' + Math.round(compassAngle) + ' град';
-    }
-
-    function updateGridRotation() {
-        $('gridVastu').style.transform = 'rotate(' + compassAngle + 'deg)';
-    }
-
-    // СЕТКА
-    function refreshCells() {
-        var cells = document.querySelectorAll('.grid-cell');
-        cells.forEach(function(cell) {
-            var zone = cell.getAttribute('data-zone');
-            if (marked[zone]) {
-                cell.classList.add('marked');
-            } else {
-                cell.classList.remove('marked');
-            }
-            cell.onclick = function(e) {
-                e.stopPropagation();
-                showTip(zone);
-            };
-        });
-    }
-    refreshCells();
-
-    function showTip(zone) {
-        currentZone = zone;
-        var d = zoneData[zone];
-        $('tipTitle').textContent = d.title;
-        $('tipGood').textContent = d.good;
-        $('tipBad').textContent = d.bad;
-        $('tipExtra').textContent = d.extra;
-
-        if (marked[zone]) {
-            $('btnMark').textContent = 'СНЯТЬ ОТМЕТКУ';
-        } else {
-            $('btnMark').textContent = 'ОТМЕТИТЬ КАК ПРОБЛЕМНУЮ';
-        }
-        $('tooltipBox').classList.add('active');
-    }
-
-    $('btnMark').addEventListener('click', function() {
-        if (!currentZone) return;
-        marked[currentZone] = !marked[currentZone];
-        refreshCells();
-        showTip(currentZone);
-    });
-
-    // ПЛАН
-    var planImage = $('planImage');
-    var planLayer = $('planLayer');
-    var gridSection = $('gridSection');
-    var planDragOn = false;
-    var planDragLastX = 0, planDragLastY = 0;
-    var planDragStartX = 0, planDragStartY = 0;
-    var planPinching = false;
-    var pinchStartDist = 0, pinchStartScale = 1;
-    var pinchStartX = 0, pinchStartY = 0;
-    var pinchMidX = 0, pinchMidY = 0;
-
-    planImage.addEventListener('pointerdown', function(e) {
-        if (!hasPlan) return;
-        planDragOn = true;
-        planLayer.classList.add('active-drag');
-        planImage.setPointerCapture(e.pointerId);
-        planDragLastX = e.clientX;
-        planDragLastY = e.clientY;
-        planDragStartX = planX;
-        planDragStartY = planY;
-        planPinching = false;
-        e.stopPropagation();
-    });
-
-    window.addEventListener('pointermove', function(e) {
-        if (!hasPlan || !planDragOn || planPinching) return;
-        var dx = e.clientX - planDragLastX;
-        var dy = e.clientY - planDragLastY;
-        planX = planDragStartX + dx;
-        planY = planDragStartY + dy;
-        applyPlan();
-    });
-
-    window.addEventListener('pointerup', function(e) {
-        if (!hasPlan) return;
-        planDragOn = false;
-        planPinching = false;
-        planLayer.classList.remove('active-drag');
-        try { planImage.releasePointerCapture(e.pointerId); } catch(ex) {}
-    });
-
-    gridSection.addEventListener('touchstart', function(e) {
-        if (!hasPlan) return;
-        if (e.touches.length === 2) {
-            planPinching = true;
-            planDragOn = false;
-            planLayer.classList.add('active-drag');
-            pinchStartDist = Math.hypot(
-                e.touches[0].clientX - e.touches[1].clientX,
-                e.touches[0].clientY - e.touches[1].clientY
-            );
-            pinchStartScale = planScale;
-            pinchStartX = planX;
-            pinchStartY = planY;
-            pinchMidX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
-            pinchMidY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-        }
-    }, { passive: false });
-
-    gridSection.addEventListener('touchmove', function(e) {
-        if (!hasPlan || !planPinching) return;
-        if (e.touches.length === 2) {
-            e.preventDefault();
-            var dist = Math.hypot(
-                e.touches[0].clientX - e.touches[1].clientX,
-                e.touches[0].clientY - e.touches[1].clientY
-            );
-            var newScale = pinchStartScale * (dist / pinchStartDist);
-            newScale = Math.max(0.2, Math.min(6, newScale));
-            planScale = newScale;
-            var rect = gridSection.getBoundingClientRect();
-            var rx = pinchMidX - (rect.left + rect.width * 0.1);
-            var ry = pinchMidY - (rect.top + rect.height * 0.1);
-            planX = pinchStartX + rx * (1 - newScale / pinchStartScale);
-            planY = pinchStartY + ry * (1 - newScale / pinchStartScale);
-            applyPlan();
-        }
-    }, { passive: false });
-
-    gridSection.addEventListener('touchend', function(e) {
-        if (e.touches.length < 2) {
-            planPinching = false;
-            planLayer.classList.remove('active-drag');
-        }
-    });
-
-    $('btnToResult').addEventListener('click', showResult);
-    $('btnBackUpload').addEventListener('click', function() { show('screenUpload'); });
-
-    // ЭКРАН 3
-    function showResult() {
-        var count = 0;
-        zoneKeys.forEach(function(k) { if (marked[k]) count++; });
-        $('summaryNum').textContent = count;
-
-        var html = '';
-        zoneKeys.forEach(function(k) {
-            if (marked[k]) {
-                var d = zoneData[k];
-                html += '<div class="result-card">' +
-                    '<div class="r-title">&#9888; ' + d.name + '</div>' +
-                    '<div class="r-text">' + d.bad.replace('Не должно быть: ', '') + '</div>' +
-                    '</div>';
-            }
-        });
-        if (count === 0) {
-            html = '<div class="result-card" style="border-left-color:var(--emerald);">' +
-                '<div class="r-title">Всё чисто</div>' +
-                '<div class="r-text">Ты не отметил проблемных зон. Либо пространство в гармонии, либо проверь ещё раз.</div>' +
-                '</div>';
-        }
-        $('resultList').innerHTML = html;
-        $('sendOk').style.display = 'none';
-        $('sendNick').value = '';
-        show('screenResult');
-    }
-
-    $('btnBackCompass').addEventListener('click', function() { show('screenCompass'); });
-    $('btnRestart').addEventListener('click', fullReset);
-
-    function fullReset() {
-        zoneKeys.forEach(function(k) { marked[k] = false; });
-        compassAngle = 0;
-        hasPlan = false;
-        uploadPreview.src = '';
-        uploadZone.classList.remove('has-image');
-        btnToCompass.disabled = true;
-        fileInput.value = '';
-        planX = 0; planY = 0; planScale = 1;
-        $('planImage').src = '';
-        $('planImage').style.display = 'none';
-        $('planImage').style.transform = '';
-        $('gridVastu').style.transform = '';
-        updateCompassVisual();
-        updatePlanVisibility();
-        refreshCells();
-        $('tooltipBox').classList.remove('active');
-        currentZone = null;
-        show('screenUpload');
-    }
-
-    // ОТПРАВКА
-    $('btnSend').addEventListener('click', function() {
-        var nick = $('sendNick').value.trim();
-        if (!nick) nick = 'не указан';
-
-        var problems = [];
-        zoneKeys.forEach(function(k) {
-            if (marked[k]) problems.push(zoneData[k].name);
-        });
-
-        var formData = new FormData();
-        formData.append('Тест', 'Васту-компас');
-        formData.append('Проблемные зоны', problems.length > 0 ? problems.join(', ') : 'нет');
-        formData.append('Количество', problems.length + ' из 9');
-        formData.append('Угол севера', Math.round(compassAngle) + ' град');
-        formData.append('Ник', nick);
-        formData.append('Метка', 'ЛИД С ВАСТУ-КОМПАСА');
-
-        fetch('https://formspree.io/f/xwvygpnq', {
-            method: 'POST',
-            body: formData,
-            headers: { 'Accept': 'application/json' }
-        })
-        .then(function(r) {
-            if (r.ok) {
-                $('sendOk').style.display = 'block';
-                $('sendNick').value = '';
-            } else {
-                alert('Ошибка. Напиши вручную: @kowiktori');
-            }
-        })
-        .catch(function() {
-            alert('Ошибка. Напиши вручную: @kowiktori');
-        });
-    });
-
-    updateCompassVisual();
-    updatePlanVisibility();
-
-})();
+// ═══════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════
+buildGrid();
+window.addEventListener('resize', () => { if (planImage) resizePlanCanvas(); });
 </script>
-
 </body>
 </html>
