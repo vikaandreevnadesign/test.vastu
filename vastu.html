@@ -11,10 +11,8 @@
         :root {
             --milk: #F2EBDD;
             --emerald: #0F4F3F;
-            --emerald-light: #1a6b55;
             --gold: #D4A24C;
             --gold-dark: #b8862c;
-            --graphite: #2B2D2E;
             --bordo: #6B1E2A;
             --white: #FFFDF9;
             --text-main: #2B2D2E;
@@ -248,6 +246,7 @@
             top: 0; left: 0;
             width: 100%; height: 100%;
         }
+        /* Сетка — сверху, кликабельная */
         .grid-vastu {
             position: absolute;
             top: 10%; left: 10%;
@@ -256,11 +255,11 @@
             grid-template-columns: 1fr 1fr 1fr;
             grid-template-rows: 1fr 1fr 1fr;
             pointer-events: none;
-            z-index: 3;
+            z-index: 5;
             transition: transform 0.1s linear;
         }
         .grid-cell {
-            border: 1px solid rgba(15, 79, 63, 0.2);
+            border: 1px solid rgba(15, 79, 63, 0.28);
             pointer-events: auto;
             cursor: pointer;
             position: relative;
@@ -270,15 +269,15 @@
             padding: 4px;
             font-size: 9px;
             font-weight: 600;
-            color: rgba(43, 45, 46, 0.6);
+            color: rgba(43, 45, 46, 0.7);
             text-transform: uppercase;
             letter-spacing: 0.3px;
             line-height: 1.2;
             background-color: transparent;
         }
-        .grid-cell:active { background-color: rgba(15, 79, 63, 0.1); }
+        .grid-cell:active { background-color: rgba(15, 79, 63, 0.12); }
         .grid-cell.marked {
-            background-color: rgba(107, 30, 42, 0.15);
+            background-color: rgba(107, 30, 42, 0.18);
             border: 2px solid rgba(107, 30, 42, 0.5);
             color: var(--bordo);
         }
@@ -295,30 +294,38 @@
             font-size: 10px;
             font-weight: 700;
             pointer-events: none;
-            z-index: 5;
+            z-index: 6;
         }
         .grid-edge-label.n-label { top: 1%; left: 50%; transform: translateX(-50%); color: var(--bordo); }
         .grid-edge-label.s-label { bottom: 1%; left: 50%; transform: translateX(-50%); color: var(--text-soft); }
         .grid-edge-label.e-label { right: 2%; top: 50%; transform: translateY(-50%); color: var(--text-soft); }
         .grid-edge-label.w-label { left: 2%; top: 50%; transform: translateY(-50%); color: var(--text-soft); }
 
+        /* План — снизу, не кликабельный по умолчанию */
         .plan-layer {
             position: absolute;
             top: 10%; left: 10%;
             width: 80%; height: 80%;
-            pointer-events: auto;
-            z-index: 4;
+            pointer-events: none;
+            z-index: 2;
             overflow: visible;
         }
         .plan-layer img {
             position: absolute;
-            cursor: move;
             touch-action: none;
-            opacity: 0.85;
+            opacity: 0.5;
             max-width: none;
             max-height: none;
             transform-origin: 0 0;
         }
+        .plan-layer.active-drag {
+            pointer-events: auto;
+        }
+        .plan-layer.active-drag img {
+            opacity: 0.75;
+            cursor: move;
+        }
+
         .grid-hint {
             text-align: center;
             font-size: 11px;
@@ -433,8 +440,7 @@
         <h1>Где <span class="accent-text">твоя</span> точка опоры</h1>
         <p class="description">
             Пространство либо работает на тебя, либо высасывает силы.
-            Загрузи план квартиры и наложи его на сетку Васту — или работай без плана,
-            сверяя зоны мысленно.
+            Загрузи план квартиры и наложи его на сетку Васту — или работай без плана.
         </p>
 
         <div class="upload-zone" id="uploadZone">
@@ -448,7 +454,7 @@
         </div>
 
         <div class="actions-row">
-            <button type="button" class="btn btn-outline" id="btnSkip">БЕЗ ПЛАНА — РАБОТАТЬ С СЕТКОЙ</button>
+            <button type="button" class="btn btn-outline" id="btnSkip">БЕЗ ПЛАНА</button>
             <button type="button" class="btn btn-primary" id="btnToCompass" disabled>ДАЛЕЕ С ПЛАНОМ</button>
         </div>
     </div>
@@ -459,10 +465,9 @@
         <h1>Поверни <span class="accent-text">север</span> и сверь зоны</h1>
         <p class="description">
             Вращай компас пальцем. Сетка поворачивается вместе с ним.
-            Нажимай на зоны — увидишь, что должно быть, а чего быть не должно.
+            Нажимай на зоны.
         </p>
 
-        <!-- КОМПАС -->
         <div class="compass-section">
             <div class="compass-label">Вращай компас пальцем</div>
             <div class="compass-wrap">
@@ -479,9 +484,11 @@
             <div class="compass-degree" id="compassDeg">Север: 0 град</div>
         </div>
 
-        <!-- СЕТКА + ПЛАН -->
         <div class="grid-section" id="gridSection">
             <div class="grid-inner" id="gridInner">
+                <div class="plan-layer" id="planLayer">
+                    <img id="planImage" alt="План" style="display:none;">
+                </div>
                 <div class="grid-vastu" id="gridVastu">
                     <div class="grid-cell" data-zone="northwest"><span class="cell-label">С-З</span></div>
                     <div class="grid-cell" data-zone="north"><span class="cell-label">Север</span></div>
@@ -497,9 +504,6 @@
                 <div class="grid-edge-label s-label">S</div>
                 <div class="grid-edge-label e-label">E</div>
                 <div class="grid-edge-label w-label">W</div>
-                <div class="plan-layer" id="planLayer">
-                    <img id="planImage" alt="План" style="display:none;">
-                </div>
             </div>
         </div>
         <div class="grid-hint" id="gridHintPlan" style="display:none;">Двигай план одним пальцем. Двумя — масштабируй.</div>
@@ -553,55 +557,55 @@
             name: 'Север',
             title: 'Север — зона финансов и денег',
             good: 'Должно быть: чистота, вода (фонтан, картина), зеркало, зелень, сейф.',
-            bad: 'Не должно быть: туалет, мусор, кладовка, спальня, тёмные углы.'
+            bad: 'Не должно быть: туалет, мусор, кладовка, спальня.'
         },
         'northeast': {
             name: 'Северо-восток',
             title: 'Северо-восток — зона мудрости и ясности',
             good: 'Должно быть: алтарь, книги, чистота, свет, вода.',
-            bad: 'Не должно быть: туалет, спальня, кухня, тяжёлая мебель, мусор.'
+            bad: 'Не должно быть: туалет, спальня, кухня, мусор.'
         },
         'east': {
             name: 'Восток',
-            title: 'Восток — зона здоровья и социального статуса',
+            title: 'Восток — зона здоровья и статуса',
             good: 'Должно быть: окна, свет, открытое пространство, зелень.',
-            bad: 'Не должно быть: туалет, кладовка, спальня, тяжёлые шкафы.'
+            bad: 'Не должно быть: туалет, кладовка, спальня.'
         },
         'southeast': {
             name: 'Юго-восток',
             title: 'Юго-восток — зона энергии и денежного потока',
-            good: 'Должно быть: кухня, огонь, плита, свечи, активность.',
+            good: 'Должно быть: кухня, плита, свечи, активность.',
             bad: 'Не должно быть: туалет, спальня, ванная.'
         },
         'south': {
             name: 'Юг',
-            title: 'Юг — зона славы, признания и уверенности',
-            good: 'Должно быть: гостиная, награды, дипломы, свет, активность.',
+            title: 'Юг — зона славы и признания',
+            good: 'Должно быть: гостиная, награды, свет, активность.',
             bad: 'Не должно быть: туалет, ванная, кладовка, спальня.'
         },
         'southwest': {
             name: 'Юго-запад',
             title: 'Юго-запад — зона стабильности и защиты',
             good: 'Должно быть: спальня хозяев, тяжёлая мебель, земляные тона.',
-            bad: 'Не должно быть: туалет, входная дверь, кухня, детская.'
+            bad: 'Не должно быть: туалет, входная дверь, кухня.'
         },
         'west': {
             name: 'Запад',
-            title: 'Запад — зона обучения, творчества и детей',
+            title: 'Запад — зона обучения и творчества',
             good: 'Должно быть: детская, кабинет, мастерская, книги.',
-            bad: 'Не должно быть: туалет, спальня хозяев, ванная, кладовка.'
+            bad: 'Не должно быть: туалет, спальня хозяев, кладовка.'
         },
         'northwest': {
             name: 'Северо-запад',
-            title: 'Северо-запад — зона поддержки, связей и путешествий',
-            good: 'Должно быть: гостевая, коридор, прихожая, место для встреч.',
-            bad: 'Не должно быть: туалет, кухня, спальня хозяев, кладовка.'
+            title: 'Северо-запад — зона поддержки и связей',
+            good: 'Должно быть: гостевая, коридор, место для встреч.',
+            bad: 'Не должно быть: туалет, кухня, спальня хозяев.'
         },
         'center': {
             name: 'Центр',
-            title: 'Центр — зона баланса и здоровья всей семьи',
-            good: 'Должно быть: свободное пространство, свет, воздух, ничего лишнего.',
-            bad: 'Не должно быть: туалет, лестница, колонны, тяжёлая мебель, стены.'
+            title: 'Центр — зона баланса и здоровья',
+            good: 'Должно быть: свободное пространство, свет, воздух.',
+            bad: 'Не должно быть: туалет, лестница, тяжёлая мебель, стены.'
         }
     };
 
@@ -679,7 +683,7 @@
         $('planImage').style.transform = 'translate(' + planX + 'px, ' + planY + 'px) scale(' + planScale + ')';
     }
 
-    // ЭКРАН 2: КОМПАС
+    // КОМПАС
     var compassOuter = $('compassOuter');
     var compassDragging = false;
     var compassStartAngle = 0;
@@ -768,6 +772,7 @@
 
     // ПЛАН
     var planImage = $('planImage');
+    var planLayer = $('planLayer');
     var gridSection = $('gridSection');
     var planDragOn = false;
     var planDragLastX = 0, planDragLastY = 0;
@@ -780,12 +785,14 @@
     planImage.addEventListener('pointerdown', function(e) {
         if (!hasPlan) return;
         planDragOn = true;
+        planLayer.classList.add('active-drag');
         planImage.setPointerCapture(e.pointerId);
         planDragLastX = e.clientX;
         planDragLastY = e.clientY;
         planDragStartX = planX;
         planDragStartY = planY;
         planPinching = false;
+        e.stopPropagation();
     });
 
     window.addEventListener('pointermove', function(e) {
@@ -801,6 +808,7 @@
         if (!hasPlan) return;
         planDragOn = false;
         planPinching = false;
+        planLayer.classList.remove('active-drag');
         try { planImage.releasePointerCapture(e.pointerId); } catch(ex) {}
     });
 
@@ -809,6 +817,7 @@
         if (e.touches.length === 2) {
             planPinching = true;
             planDragOn = false;
+            planLayer.classList.add('active-drag');
             pinchStartDist = Math.hypot(
                 e.touches[0].clientX - e.touches[1].clientX,
                 e.touches[0].clientY - e.touches[1].clientY
@@ -832,7 +841,6 @@
             var newScale = pinchStartScale * (dist / pinchStartDist);
             newScale = Math.max(0.2, Math.min(6, newScale));
             planScale = newScale;
-
             var rect = gridSection.getBoundingClientRect();
             var rx = pinchMidX - (rect.left + rect.width * 0.1);
             var ry = pinchMidY - (rect.top + rect.height * 0.1);
@@ -843,7 +851,10 @@
     }, { passive: false });
 
     gridSection.addEventListener('touchend', function(e) {
-        if (e.touches.length < 2) planPinching = false;
+        if (e.touches.length < 2) {
+            planPinching = false;
+            planLayer.classList.remove('active-drag');
+        }
     });
 
     $('btnToResult').addEventListener('click', showResult);
