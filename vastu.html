@@ -2,12 +2,29 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Васту-компас • Проверь своё пространство</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 
     <style>
+        :root {
+            --milk: #F2EBDD;
+            --emerald: #0F4F3F;
+            --emerald-light: #1a6b55;
+            --gold: #D4A24C;
+            --gold-dark: #b8862c;
+            --graphite: #2B2D2E;
+            --bordo: #6B1E2A;
+            --olive: #4A5A35;
+            --sand: #E8D4A2;
+            --white: #FFFDF9;
+            --border-subtle: rgba(15, 79, 63, 0.12);
+            --text-main: #2B2D2E;
+            --text-soft: rgba(43, 45, 46, 0.65);
+            --card-bg: rgba(255, 253, 249, 0.85);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -15,21 +32,44 @@
         }
 
         body {
-            background-color: #F2EBDD;
+            background-color: var(--milk);
             font-family: 'Inter', sans-serif;
-            color: #2B2D2E;
+            color: var(--text-main);
             min-height: 100vh;
-            padding: 20px;
+            padding: 16px;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-user-select: none;
+            user-select: none;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.03;
+            background-image:
+                linear-gradient(var(--emerald) 0.5px, transparent 0.5px),
+                linear-gradient(90deg, var(--emerald) 0.5px, transparent 0.5px);
+            background-size: 40px 40px;
         }
 
         .container {
             max-width: 780px;
             margin: 0 auto;
-            background: rgba(255, 253, 249, 0.85);
+            background: var(--card-bg);
             border-radius: 24px;
-            padding: 44px;
-            border: 1px solid rgba(15, 79, 63, 0.12);
-            box-shadow: 0 8px 40px rgba(43, 45, 46, 0.08);
+            padding: 32px 28px;
+            border: 1px solid var(--border-subtle);
+            box-shadow: 0 8px 40px rgba(43, 45, 46, 0.08), 0 2px 8px rgba(43, 45, 46, 0.04);
+            position: relative;
+            z-index: 2;
         }
 
         .screen {
@@ -40,40 +80,40 @@
         }
 
         .subtitle {
-            font-size: 12px;
+            font-size: 11px;
             text-transform: uppercase;
             letter-spacing: 3px;
-            color: #b8862c;
-            margin-bottom: 8px;
+            color: var(--gold-dark);
+            margin-bottom: 6px;
             font-weight: 500;
         }
 
         h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 34px;
+            font-size: 30px;
             font-weight: 700;
-            color: #2B2D2E;
-            margin-bottom: 10px;
+            color: var(--text-main);
+            margin-bottom: 8px;
             line-height: 1.2;
         }
 
         .accent-text {
-            color: #0F4F3F;
+            color: var(--emerald);
             font-style: italic;
         }
 
         .description {
-            font-size: 15px;
-            color: rgba(43, 45, 46, 0.65);
-            margin-bottom: 24px;
-            line-height: 1.7;
+            font-size: 14px;
+            color: var(--text-soft);
+            margin-bottom: 20px;
+            line-height: 1.6;
         }
 
         .btn {
             display: inline-block;
-            padding: 16px 36px;
+            padding: 14px 30px;
             font-family: 'Inter', sans-serif;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
             border: none;
             border-radius: 50px;
@@ -82,22 +122,30 @@
             text-transform: uppercase;
             letter-spacing: 1.5px;
             text-decoration: none;
+            touch-action: manipulation;
+            -webkit-appearance: none;
+            position: relative;
+            z-index: 10;
         }
 
         .btn-primary {
-            background-color: #0F4F3F;
-            color: #FFFDF9;
+            background-color: var(--emerald);
+            color: var(--white);
         }
         .btn-primary:hover {
-            background-color: #1a6b55;
+            background-color: var(--emerald-light);
             transform: translateY(-2px);
             box-shadow: 0 12px 28px rgba(15, 79, 63, 0.25);
+        }
+        .btn-primary:active {
+            transform: translateY(0);
+            box-shadow: none;
         }
 
         .btn-outline {
             background: transparent;
-            border: 1.5px solid #0F4F3F;
-            color: #0F4F3F;
+            border: 1.5px solid var(--emerald);
+            color: var(--emerald);
             font-weight: 600;
         }
         .btn-outline:hover {
@@ -114,21 +162,21 @@
         .upload-zone {
             border: 2px dashed rgba(15, 79, 63, 0.25);
             border-radius: 16px;
-            padding: 50px 30px;
+            padding: 36px 24px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
             background-color: rgba(242, 235, 221, 0.4);
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
         .upload-zone:hover {
-            border-color: #0F4F3F;
+            border-color: var(--emerald);
             background-color: rgba(15, 79, 63, 0.03);
         }
         .upload-zone.has-image {
             border-style: solid;
-            border-color: #0F4F3F;
-            padding: 16px;
+            border-color: var(--emerald);
+            padding: 12px;
         }
         .upload-zone .upload-placeholder {
             display: block;
@@ -141,7 +189,7 @@
         }
         .upload-preview {
             max-width: 100%;
-            max-height: 350px;
+            max-height: 200px;
             border-radius: 8px;
             display: none;
         }
@@ -150,103 +198,321 @@
             margin: 0 auto;
         }
 
+        /* ===== КОМПАС ===== */
         .compass-section {
-            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             margin: 20px 0;
         }
-        .compass-control {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 16px;
+        .compass-label {
+            font-size: 11px;
+            color: var(--text-soft);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
         }
-        .compass-btn {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            border: 1.5px solid #0F4F3F;
-            background: transparent;
-            color: #0F4F3F;
-            font-size: 20px;
-            cursor: pointer;
-        }
-        .compass-visual {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            border: 2px solid #D4A24C;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(212, 162, 76, 0.04);
-            transition: transform 0.3s ease;
+        .compass-wrap {
             position: relative;
+            width: 140px;
+            height: 140px;
         }
-        .compass-n {
+        .compass-bg {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            background: rgba(242, 235, 221, 0.8);
+            border: 2px solid var(--gold);
+            box-shadow: 0 4px 20px rgba(43, 45, 46, 0.08);
+            position: relative;
+            cursor: grab;
+            touch-action: none;
+            transition: box-shadow 0.2s;
+        }
+        .compass-bg:active {
+            cursor: grabbing;
+            box-shadow: 0 8px 30px rgba(43, 45, 46, 0.15);
+        }
+        .compass-bg.dragging {
+            cursor: grabbing;
+            box-shadow: 0 8px 30px rgba(43, 45, 46, 0.15);
+        }
+        .compass-center {
             position: absolute;
-            top: -22px;
-            font-size: 13px;
-            font-weight: 700;
-            color: #6B1E2A;
+            top: 50%;
+            left: 50%;
+            width: 12px;
+            height: 12px;
+            background: var(--bordo);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+            pointer-events: none;
         }
-        .compass-arrow {
-            font-size: 36px;
-            color: #6B1E2A;
+        .compass-north {
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--bordo);
+            pointer-events: none;
+            z-index: 4;
+        }
+        .compass-south {
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 11px;
+            color: var(--text-soft);
+            pointer-events: none;
+            z-index: 4;
+        }
+        .compass-east {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 11px;
+            color: var(--text-soft);
+            pointer-events: none;
+            z-index: 4;
+        }
+        .compass-west {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 11px;
+            color: var(--text-soft);
+            pointer-events: none;
+            z-index: 4;
+        }
+        .compass-needle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 2px;
+            height: 52px;
+            background: var(--bordo);
+            transform-origin: center center;
+            pointer-events: none;
+            z-index: 3;
+            border-radius: 1px;
+        }
+        .compass-needle::before {
+            content: '';
+            position: absolute;
+            top: -4px;
+            left: -5px;
+            width: 12px;
+            height: 12px;
+            background: var(--bordo);
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+            border-radius: 2px;
+        }
+        .compass-needle-south {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 2px;
+            height: 52px;
+            background: rgba(43, 45, 46, 0.3);
+            transform-origin: center center;
+            pointer-events: none;
+            z-index: 2;
+            border-radius: 1px;
+        }
+        .compass-tick {
+            position: absolute;
+            top: 2px;
+            left: 50%;
+            width: 1.5px;
+            height: 10px;
+            background: var(--gold);
+            transform-origin: center 68px;
+            opacity: 0.5;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .compass-degree {
+            font-size: 12px;
+            color: var(--text-soft);
+            margin-top: 8px;
+            letter-spacing: 0.5px;
         }
 
-        .grid-wrap {
+        /* ===== СЕТКА ВАСТУ ===== */
+        .grid-section {
             position: relative;
-            margin: 24px 0;
-            border-radius: 12px;
-            border: 1px solid rgba(15, 79, 63, 0.1);
-            min-height: 300px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            margin: 20px 0;
+            border-radius: 14px;
+            border: 1px solid rgba(15, 79, 63, 0.15);
+            background: rgba(242, 235, 221, 0.4);
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            max-height: 480px;
             overflow: hidden;
+            touch-action: none;
         }
-        .grid-inner {
-            position: relative;
-            display: inline-block;
-            line-height: 0;
-        }
-        .grid-inner img {
-            max-width: 100%;
-            max-height: 450px;
-            display: block;
-        }
-        .grid-zone {
+        .grid-container {
             position: absolute;
+            top: 50%;
+            left: 50%;
+            transform-origin: center center;
+            width: 100%;
+            height: 100%;
+        }
+        .grid-vastu {
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            width: 80%;
+            height: 80%;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 1fr 1fr 1fr;
+            pointer-events: none;
+            z-index: 3;
+        }
+        .grid-cell {
+            border: 1px solid rgba(15, 79, 63, 0.2);
+            pointer-events: auto;
             cursor: pointer;
             transition: background-color 0.2s;
-            border: 1px solid rgba(15, 79, 63, 0.08);
+            position: relative;
+            display: flex;
+            align-items: flex-start;
+            justify-content: flex-start;
+            padding: 4px;
+            font-size: 9px;
+            font-weight: 600;
+            color: rgba(43, 45, 46, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            line-height: 1.2;
+            background-color: transparent;
         }
-        .grid-zone:hover {
-            background-color: rgba(15, 79, 63, 0.1) !important;
+        .grid-cell:hover {
+            background-color: rgba(15, 79, 63, 0.08) !important;
+            z-index: 6;
         }
-        .grid-zone.marked {
+        .grid-cell.marked {
             background-color: rgba(107, 30, 42, 0.15) !important;
             border: 2px solid rgba(107, 30, 42, 0.5) !important;
+            color: var(--bordo);
         }
-        .grid-label {
-            position: absolute;
+        .grid-cell .cell-label {
             pointer-events: none;
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 600;
-            color: #2B2D2E;
-            opacity: 0.7;
             text-transform: uppercase;
+            letter-spacing: 0.3px;
+            opacity: 0.7;
+        }
+        /* Подписи сторон света по краям сетки */
+        .grid-compass-label {
+            position: absolute;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--bordo);
+            pointer-events: none;
+            z-index: 5;
+            letter-spacing: 1px;
+        }
+        .grid-compass-label.n {
+            top: 1%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .grid-compass-label.s {
+            bottom: 1%;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--text-soft);
+        }
+        .grid-compass-label.e {
+            right: 2%;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-soft);
+        }
+        .grid-compass-label.w {
+            left: 2%;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-soft);
+        }
+        .grid-compass-label.ne {
+            top: 3%;
+            right: 6%;
+            font-size: 8px;
+            color: var(--text-soft);
+        }
+        .grid-compass-label.nw {
+            top: 3%;
+            left: 6%;
+            font-size: 8px;
+            color: var(--text-soft);
+        }
+        .grid-compass-label.se {
+            bottom: 3%;
+            right: 6%;
+            font-size: 8px;
+            color: var(--text-soft);
+        }
+        .grid-compass-label.sw {
+            bottom: 3%;
+            left: 6%;
+            font-size: 8px;
+            color: var(--text-soft);
         }
 
+        /* План поверх сетки */
+        .plan-layer {
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            width: 80%;
+            height: 80%;
+            pointer-events: none;
+            z-index: 4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: visible;
+        }
+        .plan-layer img {
+            position: absolute;
+            pointer-events: auto;
+            cursor: move;
+            touch-action: none;
+            opacity: 0.85;
+            max-width: none;
+            max-height: none;
+            transform-origin: center center;
+        }
+
+        .grid-hint {
+            text-align: center;
+            font-size: 11px;
+            color: var(--text-soft);
+            margin-top: 4px;
+            font-style: italic;
+        }
+
+        /* ===== ТУЛТИП ===== */
         .tooltip-box {
-            background: #FFFDF9;
+            background: var(--white);
             border: 1px solid rgba(15, 79, 63, 0.2);
             border-radius: 12px;
-            padding: 18px 20px;
+            padding: 16px 18px;
             box-shadow: 0 12px 36px rgba(43, 45, 46, 0.12);
             font-size: 13px;
             line-height: 1.7;
-            margin-top: 16px;
+            margin-top: 14px;
             display: none;
         }
         .tooltip-box.active {
@@ -256,37 +522,43 @@
             font-family: 'Playfair Display', serif;
             font-size: 18px;
             font-weight: 700;
-            color: #0F4F3F;
-            margin-bottom: 6px;
+            color: var(--emerald);
+            margin-bottom: 4px;
         }
         .tooltip-box .good {
-            color: #0F4F3F;
+            color: var(--emerald);
             margin-top: 8px;
         }
         .tooltip-box .bad {
-            color: #6B1E2A;
+            color: var(--bordo);
             margin-top: 4px;
         }
+        .btn-mark {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 12px;
+        }
 
+        /* ===== РЕЗУЛЬТАТ ===== */
         .result-card {
             background: rgba(242, 235, 221, 0.5);
             border-radius: 14px;
-            padding: 16px 20px;
-            margin-bottom: 10px;
-            border-left: 3px solid #6B1E2A;
+            padding: 14px 18px;
+            margin-bottom: 8px;
+            border-left: 3px solid var(--bordo);
+            font-size: 13px;
         }
         .summary-num {
             font-family: 'Playfair Display', serif;
             font-size: 48px;
             font-weight: 700;
-            color: #6B1E2A;
+            color: var(--bordo);
             text-align: center;
             margin: 16px 0 4px;
         }
-
         .send-block {
-            margin-top: 24px;
-            padding-top: 20px;
+            margin-top: 20px;
+            padding-top: 18px;
             border-top: 1px solid rgba(15, 79, 63, 0.1);
             text-align: center;
         }
@@ -296,44 +568,72 @@
             background: rgba(242, 235, 221, 0.6);
             border: 1px solid rgba(15, 79, 63, 0.15);
             border-radius: 10px;
-            color: #2B2D2E;
+            color: var(--text-main);
             font-family: 'Inter', sans-serif;
             font-size: 14px;
             margin-bottom: 10px;
             outline: none;
         }
         .send-block input:focus {
-            border-color: #D4A24C;
+            border-color: var(--gold-dark);
         }
         .send-success {
-            color: #0F4F3F;
-            font-size: 14px;
-            margin-top: 10px;
+            color: var(--emerald);
+            font-size: 13px;
+            margin-top: 8px;
             display: none;
+            font-weight: 500;
         }
 
         .actions-row {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             flex-wrap: wrap;
             justify-content: center;
-            margin-top: 20px;
+            margin-top: 16px;
         }
-
         .footer-note {
             text-align: center;
-            margin-top: 28px;
-            font-size: 11px;
+            margin-top: 24px;
+            font-size: 10px;
             color: rgba(43, 45, 46, 0.3);
             letter-spacing: 1px;
         }
 
         @media (max-width: 600px) {
             .container {
-                padding: 24px 16px;
+                padding: 20px 14px;
             }
             h1 {
-                font-size: 26px;
+                font-size: 24px;
+            }
+            .compass-wrap {
+                width: 120px;
+                height: 120px;
+            }
+            .compass-bg {
+                width: 120px;
+                height: 120px;
+            }
+            .compass-north,
+            .compass-south,
+            .compass-east,
+            .compass-west {
+                font-size: 10px;
+            }
+            .compass-needle,
+            .compass-needle-south {
+                height: 42px;
+            }
+            .compass-tick {
+                transform-origin: center 58px;
+            }
+            .grid-cell {
+                font-size: 7px;
+                padding: 2px;
+            }
+            .grid-cell .cell-label {
+                font-size: 7px;
             }
         }
     </style>
@@ -342,60 +642,97 @@
 
 <div class="container">
 
-    <!-- ЭКРАН ЗАГРУЗКИ -->
+    <!-- ===== ЭКРАН ЗАГРУЗКИ ===== -->
     <div id="screenUpload" class="screen active">
         <div class="subtitle">Блок 2 &bull; Васту-компас</div>
         <h1>Где <span class="accent-text">твоя</span> точка опоры</h1>
         <p class="description">
             Пространство либо работает на тебя, либо высасывает силы.
-            Загрузи план квартиры и проверь, что находится в каждой зоне Васту.
+            Загрузи план квартиры и наложи его на сетку Васту — или работай без плана,
+            сверяя зоны мысленно.
         </p>
 
         <div class="upload-zone" id="uploadZone">
             <div class="upload-placeholder">
-                <div style="font-size:48px;margin-bottom:12px;opacity:0.6;">&#128208;</div>
+                <div style="font-size:44px;margin-bottom:10px;opacity:0.6;">&#128208;</div>
                 <div style="font-size:14px;color:rgba(43,45,46,0.65);">Загрузи план квартиры</div>
-                <div style="font-size:12px;color:rgba(43,45,46,0.35);">Скрин, фото схемы, рисунок &bull; JPG, PNG</div>
+                <div style="font-size:11px;color:rgba(43,45,46,0.3);">Скрин, фото схемы, рисунок &bull; JPG, PNG</div>
             </div>
             <input type="file" id="fileInput" accept="image/*">
             <img class="upload-preview" id="uploadPreview" alt="План">
         </div>
 
-        <button type="button" class="btn btn-outline" id="btnSkip">НЕТ ПЛАНА</button>
-        <button type="button" class="btn btn-primary" id="btnToCompass" disabled>ДАЛЕЕ</button>
+        <div class="actions-row">
+            <button type="button" class="btn btn-outline" id="btnSkip">НЕТ ПЛАНА — РАБОТАТЬ С СЕТКОЙ</button>
+            <button type="button" class="btn btn-primary" id="btnToCompass" disabled>ДАЛЕЕ С ПЛАНОМ</button>
+        </div>
     </div>
 
-    <!-- ЭКРАН КОМПАСА -->
+    <!-- ===== ЭКРАН КОМПАСА + СЕТКИ ===== -->
     <div id="screenCompass" class="screen">
         <div class="subtitle">Блок 2 &bull; Васту-компас</div>
-        <h1>Направь <span class="accent-text">север</span></h1>
+        <h1>Поверни <span class="accent-text">север</span> и сверь зоны</h1>
         <p class="description">
-            Поверни компас так, чтобы стрелка указывала на север в твоей квартире.
+            Вращай компас пальцем. Север на сетке должен совпасть с реальным севером в квартире.
+            Нажимай на зоны — увидишь, что должно быть, а чего быть не должно.
         </p>
 
+        <!-- КОМПАС -->
         <div class="compass-section">
-            <div class="compass-control">
-                <button type="button" class="compass-btn" id="btnLeft">&#8634;</button>
-                <div class="compass-visual" id="compassVisual">
-                    <span class="compass-n">N</span>
-                    <span class="compass-arrow">&uarr;</span>
+            <div class="compass-label">Вращай компас пальцем</div>
+            <div class="compass-wrap" id="compassWrap">
+                <div class="compass-bg" id="compassBg">
+                    <div class="compass-needle" id="compassNeedle"></div>
+                    <div class="compass-needle-south" id="compassNeedleSouth"></div>
+                    <div class="compass-north">N</div>
+                    <div class="compass-south">S</div>
+                    <div class="compass-east">E</div>
+                    <div class="compass-west">W</div>
+                    <div class="compass-center"></div>
                 </div>
-                <button type="button" class="compass-btn" id="btnRight">&#8635;</button>
             </div>
-            <div style="margin-top:8px;font-size:13px;color:rgba(43,45,46,0.5);" id="compassDeg">Север: 0&deg;</div>
+            <div class="compass-degree" id="compassDeg">Север: 0&deg;</div>
         </div>
 
-        <div class="grid-wrap" id="gridWrap">
-            <div class="grid-inner" id="gridInner">
-                <img id="gridImage" alt="План" style="display:none;">
+        <!-- СЕТКА + ПЛАН -->
+        <div class="grid-section" id="gridSection">
+            <div class="grid-container" id="gridContainer">
+                <!-- Сетка Васту -->
+                <div class="grid-vastu" id="gridVastu">
+                    <div class="grid-cell" data-zone="northwest"><span class="cell-label">С-З</span></div>
+                    <div class="grid-cell" data-zone="north"><span class="cell-label">Север</span></div>
+                    <div class="grid-cell" data-zone="northeast"><span class="cell-label">С-В</span></div>
+                    <div class="grid-cell" data-zone="west"><span class="cell-label">Запад</span></div>
+                    <div class="grid-cell" data-zone="center"><span class="cell-label">Центр</span></div>
+                    <div class="grid-cell" data-zone="east"><span class="cell-label">Восток</span></div>
+                    <div class="grid-cell" data-zone="southwest"><span class="cell-label">Ю-З</span></div>
+                    <div class="grid-cell" data-zone="south"><span class="cell-label">Юг</span></div>
+                    <div class="grid-cell" data-zone="southeast"><span class="cell-label">Ю-В</span></div>
+                </div>
+                <!-- Подписи сторон света на сетке -->
+                <div class="grid-compass-label n">N</div>
+                <div class="grid-compass-label s">S</div>
+                <div class="grid-compass-label e">E</div>
+                <div class="grid-compass-label w">W</div>
+                <div class="grid-compass-label ne">NE</div>
+                <div class="grid-compass-label nw">NW</div>
+                <div class="grid-compass-label se">SE</div>
+                <div class="grid-compass-label sw">SW</div>
+                <!-- Слой с планом -->
+                <div class="plan-layer" id="planLayer">
+                    <img id="planImage" alt="План" style="display:none;">
+                </div>
             </div>
         </div>
+        <div class="grid-hint" id="gridHintPlan" style="display:none;">Двигай и масштабируй план двумя пальцами, чтобы подогнать под сетку</div>
+        <div class="grid-hint" id="gridHintNoPlan">Нажимай на зоны, чтобы узнать, что должно быть в каждой</div>
 
+        <!-- ТУЛТИП -->
         <div class="tooltip-box" id="tooltipBox">
             <div class="zone-title" id="tipTitle"></div>
             <div class="good" id="tipGood"></div>
             <div class="bad" id="tipBad"></div>
-            <button type="button" class="btn btn-outline" id="btnMark" style="margin-top:10px;padding:10px 20px;font-size:12px;">ОТМЕТИТЬ КАК ПРОБЛЕМНУЮ</button>
+            <button type="button" class="btn btn-outline btn-mark" id="btnMark">ОТМЕТИТЬ КАК ПРОБЛЕМНУЮ</button>
         </div>
 
         <div class="actions-row">
@@ -404,26 +741,26 @@
         </div>
     </div>
 
-    <!-- ЭКРАН РЕЗУЛЬТАТА -->
+    <!-- ===== ЭКРАН РЕЗУЛЬТАТА ===== -->
     <div id="screenResult" class="screen">
         <div class="subtitle">Блок 2 &bull; Результат</div>
         <h1>Твой <span class="accent-text">Васту-разбор</span></h1>
-        <p class="description">Ты проверил пространство через Васту-компас. Вот что получилось.</p>
+        <p class="description">Ты проверил пространство через Васту-компас. Вот проблемные зоны.</p>
 
         <div class="summary-num" id="summaryNum">0</div>
-        <div style="text-align:center;color:rgba(43,45,46,0.5);font-size:14px;margin-bottom:20px;">проблемных зон из 9</div>
+        <div style="text-align:center;color:var(--text-soft);font-size:14px;margin-bottom:18px;">проблемных зон из 9</div>
 
         <div id="resultList"></div>
 
         <div class="send-block">
-            <p style="font-size:13px;color:rgba(43,45,46,0.6);margin-bottom:12px;">Хочешь полную диагностику и корректировку? Оставь ник.</p>
+            <p style="font-size:13px;color:var(--text-soft);margin-bottom:10px;">Хочешь полную диагностику и корректировку пространства? Оставь ник.</p>
             <input type="text" id="sendNick" placeholder="твой_ник_в_телеграм">
             <button type="button" class="btn btn-primary" id="btnSend">ОТПРАВИТЬ НА ДИАГНОСТИКУ</button>
             <div class="send-success" id="sendOk">Отправлено! Я напишу тебе.</div>
         </div>
 
         <div class="actions-row">
-            <button type="button" class="btn btn-outline" id="btnBackCompass">НАЗАД</button>
+            <button type="button" class="btn btn-outline" id="btnBackCompass">НАЗАД К СЕТКЕ</button>
             <button type="button" class="btn btn-outline" id="btnRestart">ЗАНОВО</button>
         </div>
     </div>
@@ -434,60 +771,61 @@
 <script>
 (function() {
 
+    // ===== ДАННЫЕ ЗОН =====
     var zoneData = {
         'north': {
             name: 'Север',
             title: 'Север — зона финансов и денег',
-            good: 'Должно быть: чистота, вода, зеркало, зелень, сейф.',
-            bad: 'Не должно быть: туалет, мусор, кладовка, спальня.'
+            good: 'Должно быть: чистота, вода (фонтан, картина), зеркало, зелень, сейф.',
+            bad: 'Не должно быть: туалет, мусор, кладовка, спальня, тёмные углы.'
         },
         'northeast': {
             name: 'Северо-восток',
             title: 'Северо-восток — зона мудрости и ясности',
             good: 'Должно быть: алтарь, книги, чистота, свет, вода.',
-            bad: 'Не должно быть: туалет, спальня, кухня, мусор.'
+            bad: 'Не должно быть: туалет, спальня, кухня, тяжёлая мебель, мусор.'
         },
         'east': {
             name: 'Восток',
-            title: 'Восток — зона здоровья и статуса',
+            title: 'Восток — зона здоровья и социального статуса',
             good: 'Должно быть: окна, свет, открытое пространство, зелень.',
             bad: 'Не должно быть: туалет, кладовка, спальня, тяжёлые шкафы.'
         },
         'southeast': {
             name: 'Юго-восток',
             title: 'Юго-восток — зона энергии и денежного потока',
-            good: 'Должно быть: кухня, плита, свечи, активность.',
+            good: 'Должно быть: кухня, огонь, плита, свечи, активность.',
             bad: 'Не должно быть: туалет, спальня, ванная.'
         },
         'south': {
             name: 'Юг',
-            title: 'Юг — зона славы и признания',
-            good: 'Должно быть: гостиная, награды, свет, активность.',
+            title: 'Юг — зона славы, признания и уверенности',
+            good: 'Должно быть: гостиная, награды, дипломы, свет, активность.',
             bad: 'Не должно быть: туалет, ванная, кладовка, спальня.'
         },
         'southwest': {
             name: 'Юго-запад',
             title: 'Юго-запад — зона стабильности и защиты',
             good: 'Должно быть: спальня хозяев, тяжёлая мебель, земляные тона.',
-            bad: 'Не должно быть: туалет, входная дверь, кухня.'
+            bad: 'Не должно быть: туалет, входная дверь, кухня, детская.'
         },
         'west': {
             name: 'Запад',
-            title: 'Запад — зона обучения и творчества',
+            title: 'Запад — зона обучения, творчества и детей',
             good: 'Должно быть: детская, кабинет, мастерская, книги.',
-            bad: 'Не должно быть: туалет, спальня хозяев, кладовка.'
+            bad: 'Не должно быть: туалет, спальня хозяев, ванная, кладовка.'
         },
         'northwest': {
             name: 'Северо-запад',
-            title: 'Северо-запад — зона поддержки и связей',
-            good: 'Должно быть: гостевая, коридор, место для встреч.',
-            bad: 'Не должно быть: туалет, кухня, спальня хозяев.'
+            title: 'Северо-запад — зона поддержки, связей и путешествий',
+            good: 'Должно быть: гостевая, коридор, прихожая, место для встреч.',
+            bad: 'Не должно быть: туалет, кухня, спальня хозяев, кладовка.'
         },
         'center': {
             name: 'Центр',
-            title: 'Центр — зона баланса и здоровья',
-            good: 'Должно быть: свободное пространство, свет, воздух.',
-            bad: 'Не должно быть: туалет, лестница, тяжёлая мебель, стены.'
+            title: 'Центр — зона баланса и здоровья всей семьи',
+            good: 'Должно быть: свободное пространство, свет, воздух, ничего лишнего.',
+            bad: 'Не должно быть: туалет, лестница, колонны, тяжёлая мебель, стены.'
         }
     };
 
@@ -495,227 +833,359 @@
     var marked = {};
     zoneKeys.forEach(function(k) { marked[k] = false; });
 
-    var compassAngle = 0;
-    var uploadedImage = null;
+    var compassAngle = 0;       // градусы поворота компаса
+    var hasPlan = false;
     var currentZone = null;
 
-    // Экраны
+    // План: трансформации
+    var planX = 0, planY = 0, planScale = 1;
+    var planDragActive = false;
+    var planLastX = 0, planLastY = 0;
+    var planStartDist = 0;
+    var planStartScale = 1;
+    var planStartX = 0, planStartY = 0;
+    var planPinchActive = false;
+
+    // ===== DOM-ЭЛЕМЕНТЫ =====
+    function $(id) { return document.getElementById(id); }
+
     function show(id) {
-        document.getElementById('screenUpload').classList.remove('active');
-        document.getElementById('screenCompass').classList.remove('active');
-        document.getElementById('screenResult').classList.remove('active');
-        document.getElementById(id).classList.add('active');
+        $('screenUpload').classList.remove('active');
+        $('screenCompass').classList.remove('active');
+        $('screenResult').classList.remove('active');
+        $(id).classList.add('active');
     }
 
-    // === ЭКРАН 1: ЗАГРУЗКА ===
-    var uploadZone = document.getElementById('uploadZone');
-    var fileInput = document.getElementById('fileInput');
-    var uploadPreview = document.getElementById('uploadPreview');
-    var btnToCompass = document.getElementById('btnToCompass');
+    // ===== ЭКРАН 1: ЗАГРУЗКА =====
+    var uploadZone = $('uploadZone');
+    var fileInput = $('fileInput');
+    var uploadPreview = $('uploadPreview');
+    var btnToCompass = $('btnToCompass');
 
-    uploadZone.addEventListener('click', function() {
-        fileInput.click();
-    });
-
+    uploadZone.addEventListener('click', function() { fileInput.click(); });
     fileInput.addEventListener('change', function() {
         var file = fileInput.files[0];
         if (!file) return;
         var reader = new FileReader();
         reader.onload = function(e) {
-            uploadedImage = e.target.result;
-            uploadPreview.src = uploadedImage;
+            uploadPreview.src = e.target.result;
             uploadZone.classList.add('has-image');
             btnToCompass.disabled = false;
         };
         reader.readAsDataURL(file);
     });
 
-    btnToCompass.addEventListener('click', goToCompass);
-    document.getElementById('btnSkip').addEventListener('click', goToCompass);
+    btnToCompass.addEventListener('click', function() {
+        hasPlan = true;
+        loadPlanImage(uploadPreview.src);
+        goToCompass();
+    });
+    $('btnSkip').addEventListener('click', function() {
+        hasPlan = false;
+        goToCompass();
+    });
 
     function goToCompass() {
-        renderGrid();
+        updateGridVisuals();
+        updatePlanVisibility();
+        $('tooltipBox').classList.remove('active');
+        updateCompassVisual();
         show('screenCompass');
     }
 
-    // === ЭКРАН 2: КОМПАС ===
-    var compassVisual = document.getElementById('compassVisual');
-    var compassDeg = document.getElementById('compassDeg');
-    var gridImage = document.getElementById('gridImage');
-    var gridInner = document.getElementById('gridInner');
-    var tooltipBox = document.getElementById('tooltipBox');
-    var tipTitle = document.getElementById('tipTitle');
-    var tipGood = document.getElementById('tipGood');
-    var tipBad = document.getElementById('tipBad');
-    var btnMark = document.getElementById('btnMark');
-
-    function updateCompass() {
-        compassVisual.style.transform = 'rotate(' + compassAngle + 'deg)';
-        compassDeg.innerHTML = 'Север: ' + compassAngle + '&deg;';
+    function loadPlanImage(src) {
+        $('planImage').src = src;
+        $('planImage').style.display = 'block';
+        // Сброс трансформаций
+        planX = 0; planY = 0; planScale = 1;
+        applyPlanTransform();
     }
 
-    document.getElementById('btnLeft').addEventListener('click', function() {
-        compassAngle = (compassAngle - 15 + 360) % 360;
-        updateCompass();
-        renderGrid();
-    });
-    document.getElementById('btnRight').addEventListener('click', function() {
-        compassAngle = (compassAngle + 15) % 360;
-        updateCompass();
-        renderGrid();
-    });
-
-    function renderGrid() {
-        // Очистка старых зон и меток
-        var oldZones = gridInner.querySelectorAll('.grid-zone, .grid-label');
-        for (var i = 0; i < oldZones.length; i++) {
-            oldZones[i].parentNode.removeChild(oldZones[i]);
-        }
-        tooltipBox.classList.remove('active');
-
-        if (!uploadedImage) {
-            gridImage.style.display = 'none';
-            return;
-        }
-
-        gridImage.src = uploadedImage;
-        gridImage.style.display = 'block';
-
-        // Ждём размеры
-        setTimeout(function() {
-            drawZones();
-        }, 200);
-    }
-
-    function drawZones() {
-        var w = gridImage.clientWidth || 400;
-        var h = gridImage.clientHeight || 300;
-        var cellW = w / 3;
-        var cellH = h / 3;
-
-        var gridMap = [
-            { key: 'northwest', col: 0, row: 0 },
-            { key: 'north', col: 1, row: 0 },
-            { key: 'northeast', col: 2, row: 0 },
-            { key: 'west', col: 0, row: 1 },
-            { key: 'center', col: 1, row: 1 },
-            { key: 'east', col: 2, row: 1 },
-            { key: 'southwest', col: 0, row: 2 },
-            { key: 'south', col: 1, row: 2 },
-            { key: 'southeast', col: 2, row: 2 }
-        ];
-
-        for (var i = 0; i < gridMap.length; i++) {
-            var item = gridMap[i];
-            var zone = document.createElement('div');
-            zone.className = 'grid-zone';
-            if (marked[item.key]) zone.classList.add('marked');
-            zone.style.left = (item.col * cellW) + 'px';
-            zone.style.top = (item.row * cellH) + 'px';
-            zone.style.width = cellW + 'px';
-            zone.style.height = cellH + 'px';
-            zone.setAttribute('data-key', item.key);
-
-            zone.addEventListener('click', function(e) {
-                var key = e.currentTarget.getAttribute('data-key');
-                showTip(key);
-            });
-
-            gridInner.appendChild(zone);
-
-            var label = document.createElement('div');
-            label.className = 'grid-label';
-            label.textContent = zoneData[item.key].name;
-            label.style.left = (item.col * cellW + 4) + 'px';
-            label.style.top = (item.row * cellH + 4) + 'px';
-            gridInner.appendChild(label);
-        }
-    }
-
-    function showTip(key) {
-        currentZone = key;
-        var d = zoneData[key];
-        tipTitle.textContent = d.title;
-        tipGood.textContent = d.good;
-        tipBad.textContent = d.bad;
-
-        if (marked[key]) {
-            btnMark.textContent = 'СНЯТЬ ОТМЕТКУ';
+    function updatePlanVisibility() {
+        if (hasPlan) {
+            $('planImage').style.display = 'block';
+            $('gridHintPlan').style.display = 'block';
+            $('gridHintNoPlan').style.display = 'none';
         } else {
-            btnMark.textContent = 'ОТМЕТИТЬ КАК ПРОБЛЕМНУЮ';
+            $('planImage').style.display = 'none';
+            $('gridHintPlan').style.display = 'none';
+            $('gridHintNoPlan').style.display = 'block';
         }
-
-        tooltipBox.classList.add('active');
     }
 
-    btnMark.addEventListener('click', function() {
+    function applyPlanTransform() {
+        var img = $('planImage');
+        img.style.transform = 'translate(' + planX + 'px, ' + planY + 'px) scale(' + planScale + ')';
+    }
+
+    // ===== ЭКРАН 2: КОМПАС + СЕТКА =====
+
+    // --- КОМПАС с вращением пальцем ---
+    var compassBg = $('compassBg');
+    var compassDragActive = false;
+    var compassStartAngle = 0;
+    var compassStartTouchAngle = 0;
+
+    function getAngleFromCenter(x, y, rect) {
+        var cx = rect.left + rect.width / 2;
+        var cy = rect.top + rect.height / 2;
+        return Math.atan2(y - cy, x - cx) * 180 / Math.PI;
+    }
+
+    compassBg.addEventListener('pointerdown', function(e) {
+        compassDragActive = true;
+        compassBg.classList.add('dragging');
+        compassBg.setPointerCapture(e.pointerId);
+        var rect = compassBg.getBoundingClientRect();
+        compassStartAngle = compassAngle;
+        compassStartTouchAngle = getAngleFromCenter(e.clientX, e.clientY, rect);
+    });
+
+    window.addEventListener('pointermove', function(e) {
+        if (!compassDragActive) return;
+        var rect = compassBg.getBoundingClientRect();
+        var currentTouchAngle = getAngleFromCenter(e.clientX, e.clientY, rect);
+        var delta = currentTouchAngle - compassStartTouchAngle;
+        // Нормализация
+        if (delta > 180) delta -= 360;
+        if (delta < -180) delta += 360;
+        compassAngle = (compassStartAngle + delta + 360) % 360;
+        updateCompassVisual();
+        updateGridVisuals();
+    });
+
+    window.addEventListener('pointerup', function(e) {
+        if (!compassDragActive) return;
+        compassDragActive = false;
+        compassBg.classList.remove('dragging');
+        compassBg.releasePointerCapture(e.pointerId);
+    });
+
+    function updateCompassVisual() {
+        // Вращаем фон компаса с метками
+        compassBg.style.transform = 'rotate(' + compassAngle + 'deg)';
+        $('compassDeg').textContent = 'Север: ' + Math.round(compassAngle) + '\u00B0';
+    }
+
+    function updateGridVisuals() {
+        // Поворачиваем сетку Васту вместе с компасом
+        $('gridVastu').style.transform = 'rotate(' + compassAngle + 'deg)';
+        // Подписи сторон света тоже вращаем, чтобы они соответствовали
+        var labels = document.querySelectorAll('.grid-compass-label');
+        labels.forEach(function(l) {
+            l.style.transform = l.classList.contains('n') ? 'translateX(-50%) rotate(' + compassAngle + 'deg)' :
+                                l.classList.contains('s') ? 'translateX(-50%) rotate(' + compassAngle + 'deg)' :
+                                l.classList.contains('e') ? 'translateY(-50%) rotate(' + compassAngle + 'deg)' :
+                                l.classList.contains('w') ? 'translateY(-50%) rotate(' + compassAngle + 'deg)' :
+                                'rotate(' + compassAngle + 'deg)';
+        });
+    }
+
+    // --- СЕТКА: КЛИКИ ПО ЗОНАМ ---
+    var gridCells = document.querySelectorAll('.grid-cell');
+    gridCells.forEach(function(cell) {
+        cell.addEventListener('click', function(e) {
+            e.stopPropagation();
+            var zone = cell.getAttribute('data-zone');
+            showTip(zone);
+        });
+    });
+
+    function refreshGridCells() {
+        gridCells = document.querySelectorAll('.grid-cell');
+        gridCells.forEach(function(cell) {
+            var zone = cell.getAttribute('data-zone');
+            if (marked[zone]) {
+                cell.classList.add('marked');
+            } else {
+                cell.classList.remove('marked');
+            }
+            // Убираем старый обработчик (через новый назначим)
+            cell.onclick = null;
+            cell.addEventListener('click', function(e) {
+                e.stopPropagation();
+                showTip(cell.getAttribute('data-zone'));
+            });
+        });
+    }
+
+    function showTip(zone) {
+        currentZone = zone;
+        var d = zoneData[zone];
+        $('tipTitle').textContent = d.title;
+        $('tipGood').textContent = d.good;
+        $('tipBad').textContent = d.bad;
+
+        if (marked[zone]) {
+            $('btnMark').textContent = 'СНЯТЬ ОТМЕТКУ';
+        } else {
+            $('btnMark').textContent = 'ОТМЕТИТЬ КАК ПРОБЛЕМНУЮ';
+        }
+        $('tooltipBox').classList.add('active');
+    }
+
+    $('btnMark').addEventListener('click', function() {
         if (!currentZone) return;
         marked[currentZone] = !marked[currentZone];
-        renderGrid();
+        refreshGridCells();
         showTip(currentZone);
     });
 
-    document.getElementById('btnToResult').addEventListener('click', function() {
-        showResult();
-    });
-    document.getElementById('btnBackUpload').addEventListener('click', function() {
-        show('screenUpload');
+    // --- ПЛАН: DRAG И PINCH-TO-ZOOM ---
+    var planImage = $('planImage');
+
+    planImage.addEventListener('pointerdown', function(e) {
+        if (!hasPlan) return;
+        planDragActive = true;
+        planImage.setPointerCapture(e.pointerId);
+        planLastX = e.clientX;
+        planLastY = e.clientY;
+        planStartX = planX;
+        planStartY = planY;
+        planPinchActive = false;
     });
 
-    // === ЭКРАН 3: РЕЗУЛЬТАТ ===
+    window.addEventListener('pointermove', function(e) {
+        if (!hasPlan) return;
+
+        // Проверка на pinch (два пальца)
+        var touches = e.targetTouches || [];
+        if (e.pointerType === 'touch' && e.isPrimary === false && planDragActive) {
+            // Второй палец — начинаем pinch
+            planPinchActive = true;
+        }
+
+        if (planPinchActive && e.pointerType === 'touch') {
+            // Обработка pinch в touch-событиях
+            return;
+        }
+
+        if (!planDragActive || planPinchActive) return;
+
+        var dx = e.clientX - planLastX;
+        var dy = e.clientY - planLastY;
+        planX = planStartX + dx;
+        planY = planStartY + dy;
+        applyPlanTransform();
+    });
+
+    window.addEventListener('pointerup', function(e) {
+        if (!hasPlan) return;
+        planDragActive = false;
+        planPinchActive = false;
+        planImage.releasePointerCapture(e.pointerId);
+    });
+
+    // Pinch-to-zoom через touch-события
+    var gridSection = $('gridSection');
+
+    gridSection.addEventListener('touchstart', function(e) {
+        if (!hasPlan) return;
+        if (e.touches.length === 2) {
+            planPinchActive = true;
+            planStartDist = Math.hypot(
+                e.touches[0].clientX - e.touches[1].clientX,
+                e.touches[0].clientY - e.touches[1].clientY
+            );
+            planStartScale = planScale;
+            planStartX = planX;
+            planStartY = planY;
+        }
+    }, { passive: false });
+
+    gridSection.addEventListener('touchmove', function(e) {
+        if (!hasPlan || !planPinchActive) return;
+        if (e.touches.length === 2) {
+            e.preventDefault();
+            var dist = Math.hypot(
+                e.touches[0].clientX - e.touches[1].clientX,
+                e.touches[0].clientY - e.touches[1].clientY
+            );
+            var newScale = planStartScale * (dist / planStartDist);
+            newScale = Math.max(0.3, Math.min(5, newScale));
+            planScale = newScale;
+
+            // Центр между пальцами
+            var cx = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+            var cy = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+            var rect = gridSection.getBoundingClientRect();
+            var relX = cx - (rect.left + rect.width / 2);
+            var relY = cy - (rect.top + rect.height / 2);
+
+            planX = planStartX + relX * (1 - newScale / planStartScale);
+            planY = planStartY + relY * (1 - newScale / planStartScale);
+
+            applyPlanTransform();
+        }
+    }, { passive: false });
+
+    gridSection.addEventListener('touchend', function(e) {
+        if (e.touches.length < 2) {
+            planPinchActive = false;
+        }
+    });
+
+    // ===== КНОПКИ ЭКРАНА 2 =====
+    $('btnToResult').addEventListener('click', showResult);
+    $('btnBackUpload').addEventListener('click', function() { show('screenUpload'); });
+
+    // ===== ЭКРАН 3: РЕЗУЛЬТАТ =====
     function showResult() {
         var count = 0;
-        for (var i = 0; i < zoneKeys.length; i++) {
-            if (marked[zoneKeys[i]]) count++;
-        }
-        document.getElementById('summaryNum').textContent = count;
+        zoneKeys.forEach(function(k) { if (marked[k]) count++; });
+        $('summaryNum').textContent = count;
 
         var html = '';
-        for (var j = 0; j < zoneKeys.length; j++) {
-            var k = zoneKeys[j];
+        zoneKeys.forEach(function(k) {
             if (marked[k]) {
                 var d = zoneData[k];
                 html += '<div class="result-card">' +
-                    '<div style="font-weight:600;">' + d.name + '</div>' +
-                    '<div style="font-size:13px;color:rgba(43,45,46,0.6);">' + d.bad.replace('Не должно быть: ', '') + '</div>' +
+                    '<div style="font-weight:600;">&#9888; ' + d.name + '</div>' +
+                    '<div style="font-size:12px;color:var(--text-soft);">' + d.bad.replace('Не должно быть: ', '') + '</div>' +
                     '</div>';
             }
-        }
+        });
         if (count === 0) {
-            html = '<div class="result-card" style="border-left-color:#0F4F3F;">' +
+            html = '<div class="result-card" style="border-left-color:var(--emerald);">' +
                 '<div style="font-weight:600;">Всё чисто</div>' +
-                '<div style="font-size:13px;color:rgba(43,45,46,0.6);">Ты не отметил проблемных зон. Либо пространство в гармонии, либо проверь ещё раз.</div>' +
+                '<div style="font-size:12px;color:var(--text-soft);">Ты не отметил проблемных зон. Либо пространство в гармонии, либо проверь ещё раз.</div>' +
                 '</div>';
         }
-        document.getElementById('resultList').innerHTML = html;
-        document.getElementById('sendOk').style.display = 'none';
-        document.getElementById('sendNick').value = '';
+        $('resultList').innerHTML = html;
+        $('sendOk').style.display = 'none';
+        $('sendNick').value = '';
         show('screenResult');
     }
 
-    document.getElementById('btnBackCompass').addEventListener('click', function() {
-        show('screenCompass');
-    });
+    $('btnBackCompass').addEventListener('click', function() { show('screenCompass'); });
+    $('btnRestart').addEventListener('click', fullReset);
 
-    document.getElementById('btnRestart').addEventListener('click', function() {
+    function fullReset() {
         zoneKeys.forEach(function(k) { marked[k] = false; });
         compassAngle = 0;
-        uploadedImage = null;
+        hasPlan = false;
         uploadPreview.src = '';
         uploadZone.classList.remove('has-image');
         btnToCompass.disabled = true;
         fileInput.value = '';
-        gridImage.style.display = 'none';
-        var old = gridInner.querySelectorAll('.grid-zone, .grid-label');
-        for (var i = 0; i < old.length; i++) { old[i].parentNode.removeChild(old[i]); }
-        tooltipBox.classList.remove('active');
-        updateCompass();
+        planX = 0; planY = 0; planScale = 1;
+        $('planImage').src = '';
+        $('planImage').style.display = 'none';
+        $('planImage').style.transform = '';
+        $('gridVastu').style.transform = '';
+        var labels = document.querySelectorAll('.grid-compass-label');
+        labels.forEach(function(l) { l.style.transform = ''; });
+        $('tooltipBox').classList.remove('active');
+        currentZone = null;
+        updateCompassVisual();
+        updatePlanVisibility();
+        refreshGridCells();
         show('screenUpload');
-    });
+    }
 
-    // === ОТПРАВКА ===
-    document.getElementById('btnSend').addEventListener('click', function() {
-        var nick = document.getElementById('sendNick').value.trim();
+    // ===== ОТПРАВКА =====
+    $('btnSend').addEventListener('click', function() {
+        var nick = $('sendNick').value.trim();
         if (!nick) nick = 'не указан';
 
         var problems = [];
@@ -727,7 +1197,7 @@
         formData.append('Тест', 'Васту-компас');
         formData.append('Проблемные зоны', problems.length > 0 ? problems.join(', ') : 'нет');
         formData.append('Количество', problems.length + ' из 9');
-        formData.append('Угол севера', compassAngle);
+        formData.append('Угол севера', Math.round(compassAngle) + ' град');
         formData.append('Ник', nick);
         formData.append('Метка', 'ЛИД С ВАСТУ-КОМПАСА');
 
@@ -738,8 +1208,8 @@
         })
         .then(function(r) {
             if (r.ok) {
-                document.getElementById('sendOk').style.display = 'block';
-                document.getElementById('sendNick').value = '';
+                $('sendOk').style.display = 'block';
+                $('sendNick').value = '';
             } else {
                 alert('Ошибка. Напиши вручную: @kowiktori');
             }
@@ -749,7 +1219,10 @@
         });
     });
 
-    updateCompass();
+    // ===== ИНИЦИАЛИЗАЦИЯ =====
+    updateCompassVisual();
+    refreshGridCells();
+    updatePlanVisibility();
 
 })();
 </script>
